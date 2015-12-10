@@ -1,0 +1,9 @@
+# view AndroidManifest.xml #generated:6
+-keep class fr.univorleans.m2inis.sig.MainActivity { <init>(...); }
+
+# view res/layout/main.xml #generated:22
+-keep class fr.univorleans.m2inis.sig.MapView { <init>(...); }
+
+# onClick res/layout/main.xml #generated:41
+-keepclassmembers class * { *** rechItineraire(...); }
+
