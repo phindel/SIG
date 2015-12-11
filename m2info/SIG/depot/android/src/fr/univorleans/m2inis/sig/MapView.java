@@ -338,6 +338,15 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
     	return new Point(x,y);
     	//return toRealPoint(x,y);//TODO pas bon
     }
+    public void setOnZoneSelectedListener(OnZoneSelectedListener onZoneSelectedListener_){
+    	onZoneSelectedListener=onZoneSelectedListener_;
+    }
+    private OnZoneSelectedListener onZoneSelectedListener;
+    public void selectionnerZone(Zone z){
+    	zoneSelectionnee=z;
+    	postInvalidate();
+    }
+    private Zone zoneSelectionnee;
     private Point fromNormalisedToDevicePoint(Point nor){
     	double x=nor.getX();
     	double y=nor.getY();
@@ -473,6 +482,12 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 				
 			}
 			canvas.drawPath(path,mPaint);
+		}
+		if(zoneSelectionnee!=null){
+			
+			mPaint.setColor(Color.RED);
+			mPaint.setStrokeWidth(3);
+			canvas.drawRect(toPointNormaliseX(zoneSelectionnee.getMinPoint()),toPointNormaliseY(zoneSelectionnee.getMinPoint()),toPointNormaliseX(zoneSelectionnee.getMaxPoint()),toPointNormaliseY(zoneSelectionnee.getMaxPoint()),mPaint);
 		}
 		mPaint.setStrokeWidth(6);
 		mPaint.setColor(Color.YELLOW);

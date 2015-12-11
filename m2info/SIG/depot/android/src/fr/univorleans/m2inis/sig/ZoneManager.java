@@ -86,4 +86,15 @@ public class ZoneManager{
 	public Collection<String> getBuildingsName(){//pour pouvoir afficher la liste des noms
 		return mBatimentUniv.keySet();
 	}
+	public Collection<Zone> getZoneAt(Point p){
+		Collection<Zone> deuxiemePasse=new ArrayList<Zone>();
+		double x=p.getX();
+		double y=p.getY();
+		for(Zone z:zones){
+			if(x>=z.getMinPoint().getX()&&y>=z.getMinPoint().getY()&&x<=z.getMaxPoint().getX()&&y<=z.getMaxPoint().getY())
+				deuxiemePasse.add(z);
+		}
+		Collection<Zone> res=deuxiemePasse;//TODO affiner
+		return res;
+	}
 }

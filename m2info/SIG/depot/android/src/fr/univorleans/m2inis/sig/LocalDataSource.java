@@ -41,7 +41,9 @@ public class LocalDataSource implements IDataSource{
 	public Collection<String> getBuildingsName(){//pour pouvoir afficher la liste des noms
 		return zoneManager.getBuildingsName();
 	}
-	
+	public Collection<Zone> getZoneAt(Point p){
+		return zoneManager.getZoneAt(p);
+	}
 	public Collection<Zone> getZones(){//pour affichage
 		return zoneManager.getZones();
 	}

@@ -16,6 +16,6 @@ public class ArcType<N>{
 		return type;
 	}
 	public boolean isArcSurLequelOnPeutMarcher(){
-		return type==route;//||type==cheminPietonier;
+		return type==route||type==cheminPietonier;
 	}
 }

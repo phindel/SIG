@@ -41,7 +41,29 @@
 		<Button android:id="@+id/buttonItineraire"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Rechercher un itinéraire"
+		android:text="Rechercher le parking\n le plus proche"
 		android:onClick="rechItineraire" />
+		<Button 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Liste des batiments"
+		android:onClick="afficherListeBatiment" />
+		<ListView android:id="@+id/listeDeZones"
+		android:layout_width="fill_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:orientation="vertical" >
+			
+		</ListView>
+		<Button  android:id="@+id/buttonParkingPlusProche"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Parking le plus proche"
+		android:onClick="" />
+		<Button 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Y aller"
+		android:onClick="" />
 	</LinearLayout>
 </LinearLayout>

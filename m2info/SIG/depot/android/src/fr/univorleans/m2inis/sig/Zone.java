@@ -6,6 +6,21 @@ public class Zone{
 		nom=nom_;
 		polygoneExterieur=polygoneExterieur_;
 		type=type_;
+		double minx=polygoneExterieur.get(0).getX();
+		double maxx=minx;
+		double miny=polygoneExterieur.get(0).getY();
+		double maxy=miny;
+		for(Point p:polygoneExterieur)
+		{
+			double x=p.getX();
+			double y=p.getY();
+			minx=Math.min(minx,x);
+			miny=Math.min(miny,y);
+			maxx=Math.max(maxx,x);
+			maxy=Math.max(maxy,y);
+		}
+		minPoint=new Point(minx,miny);
+		maxPoint=new Point(maxx,maxy);
 	}
 	private int type;
 	public static final int lac=1,foret=2,parking=3,batimentUniv=4,autreBatiment=5;
@@ -32,6 +47,13 @@ public class Zone{
 	public List<Point> getLimite(){
 		return polygoneExterieur;
 	}
+	public Point getMinPoint(){
+		return minPoint;
+	}
+	public Point getMaxPoint(){
+		return maxPoint;
+	}
+	private Point minPoint,maxPoint;
 	private String nom;
 	private List<Point>polygoneExterieur;
 }

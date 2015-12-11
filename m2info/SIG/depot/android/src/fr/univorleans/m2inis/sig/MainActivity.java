@@ -22,7 +22,7 @@ import android.widget.TextView;
 import android.view.WindowManager;
 import android.view.MotionEvent;
 import android.location.*;
-import android.widget.Button;
+import android.widget.*;
 public class MainActivity extends Activity {
 
     private MapView mMapView;
@@ -60,6 +60,7 @@ public class MainActivity extends Activity {
 		textview.setText("Hello!");
 		textEtat=textview;
 		buttonItineraire=(Button)findViewById(R.id.buttonItineraire);
+		listeDeZones=(ListView)findViewById(R.id.listeDeZones);
 		LocationManager locationManager= (LocationManager)  getSystemService(Context.LOCATION_SERVICE);
 
 		// Define a listener that responds to location updates
@@ -93,10 +94,21 @@ public class MainActivity extends Activity {
         //setContentView(mSimulationView);
         mMapView=(MapView)findViewById(R.id.zDessin);
         mMapView.setParent(this);
+        controleur=new Controleur();
+        mMapView.setOnZoneSelectedListener(controleur);
         Thread thr=new Thread(){
         	public void run(){
         		try{
-        			mMapView.setDataSource(new LocalDataSource(mMapView,getResources().openRawResource(R.raw.line),getResources().openRawResource(R.raw.zones)));
+        			dataSource=new LocalDataSource(mMapView,getResources().openRawResource(R.raw.line),getResources().openRawResource(R.raw.zones));
+        			mMapView.setDataSource(dataSource);
+        			runOnUiThread(new Runnable() {
+
+					@Override
+						public void run() {
+							afficherListeBatiment(null);
+						}
+					});
+        			
         		}catch(Throwable re){
 					showError(re);
 				}
@@ -107,7 +119,8 @@ public class MainActivity extends Activity {
 		
 		//textview.setText("Hello!");
     }
-
+    private Controleur controleur;
+	private IDataSource dataSource;
     @Override
     protected void onResume() {
         super.onResume();
@@ -132,7 +145,29 @@ public class MainActivity extends Activity {
 		//
 		setRechItineraire(!rechItineraire);
 	}
-	TextView textEtat;
+	public void afficherListeBatiment(View view) {
+		ArrayAdapter<String> arr=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
+		for(String nom:dataSource.getBuildingsName()){
+			arr.add(nom);
+		}
+		listeDeZones.setAdapter(arr);
+		listeDeZones.setOnItemClickListener(itemClickListener_batimentsUniv);
+	}
+	
+	AdapterView.OnItemClickListener itemClickListener_batimentsUniv=new AdapterView.OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, final View view,
+		int position, long id) {
+			String nom=(String)parent.getItemAtPosition(position);
+			Zone z=dataSource.getBuilding(nom);
+			mMapView.selectionnerZone(z);
+			controleur.onZoneSelected(z);
+		}
+
+		};
+	private ListView listeDeZones;
+	TextView textEtat;//.getSelectedItem
     public void setState(String st){
     	 textEtat.setText(st);
     }
