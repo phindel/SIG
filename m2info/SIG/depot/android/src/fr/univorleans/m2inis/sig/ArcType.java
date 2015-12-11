@@ -15,4 +15,7 @@ public class ArcType<N>{
 	public int getType(){
 		return type;
 	}
+	public boolean isArcSurLequelOnPeutMarcher(){
+		return type==route;//||type==cheminPietonier;
+	}
 }

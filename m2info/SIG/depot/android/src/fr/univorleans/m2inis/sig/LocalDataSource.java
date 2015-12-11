@@ -23,6 +23,9 @@ public class LocalDataSource implements IDataSource{
 	public Line computePath(Point begin,Point end){
 		return graphe.computePath(begin,end);
 	}
+	public Collection<NoeudPourParcourt> selectionnerNoeud(Point p){
+		return graphe.selectionnerNoeud(p);
+	}
 	/*public Building getBuildingAt(Point p){//a une liste de services
 		return null;//TODO
 	}*/

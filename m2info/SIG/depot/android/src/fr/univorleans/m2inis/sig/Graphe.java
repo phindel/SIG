@@ -11,6 +11,29 @@ public class Graphe{
 	public Collection<Line> getLines(int type){
 		return lines.get(type);
 	}
+	/*private Noeud plusProcheNoeud(Point pos){
+		
+		Noeud res=col.iterator().next();
+		for(Noeud n:col){
+			if(n.getPosition().distance2(pos)<res.getPosition().distance2(pos))
+				res=n;
+		}
+		return res;//TODO
+	}*/
+	public Collection<NoeudPourParcourt> selectionnerNoeud(Point p){
+		Collection<NoeudPourParcourt> res=new ArrayList<NoeudPourParcourt>();
+		NoeudPourParcourt plusProche=sommetsDuGraphe.iterator().next();
+		for(NoeudPourParcourt n:sommetsDuGraphe){
+			if(n.getPosition().distance2(p)<plusProche.getPosition().distance2(p))
+				plusProche=n;
+		}
+		res.add(plusProche);
+		for(ArcType<NoeudPourParcourt> a:plusProche.getVoisinsParcourt()){
+			if(a.isArcSurLequelOnPeutMarcher())
+				res.add(a.getNoeud());
+		}
+		return res;
+	}
 	private List<Collection<Line>> lines=new ArrayList<Collection<Line>>();
 	private void readLineAsPoint(String ln){
 		Scanner sc=new Scanner(ln);
@@ -79,13 +102,35 @@ public class Graphe{
 				lcpt+=ln.length();
 				++numLigne;
 			}
+			rechercherArcParcourable();
 			
 		}finally{
 			if(br!=null)
 				br.close();
 		}
 	}
-	
+	private void rechercherArcParcourable(){
+		NoeudPourParcourt na,nb,proj;
+		boolean trouveArcParcourable=false;
+		for(NoeudPourParcourt n:sommetsDuGraphe){
+			for(ArcType<NoeudPourParcourt> a:n.getVoisinsParcourt()){
+				if(a.isArcSurLequelOnPeutMarcher()){
+					noeudInitialPourProjection1=n;
+					noeudInitialPourProjection2=a.getNoeud();
+				}
+			}
+		}
+		/*while(){
+			na=sommetsDuGraphe.iterator().next();
+			if(na.getVoisins().iterator().hasNext())
+				nb=na.getVoisinsParcourt().iterator().next().getNoeud();
+			else
+				nb=na;
+		}
+		noeudInitialPourProjection1=na;
+		noeudInitialPourProjection2=nb;*/
+	}
+	NoeudPourParcourt noeudInitialPourProjection1,noeudInitialPourProjection2;
 	private double minx,maxx,miny,maxy;
 	private IDataSource ds;
 	
@@ -130,7 +175,8 @@ public class Graphe{
 			}else
 				for(ArcType<NoeudPourParcourt> a:n.getVoisinsParcourt()){
 					NoeudPourParcourt v=a.getNoeud();
-					res=res.plusProche(projeter(n,v,pos));
+					if(a.isArcSurLequelOnPeutMarcher())
+						res=res.plusProche(projeter(n,v,pos));
 				}
 			return res;
 		}
@@ -166,24 +212,10 @@ public class Graphe{
 	}
 	//private Collection<NoeudPourParcourt> graphe;
 	private DemiNoeud noeudDebut=new DemiNoeud(),noeudFin=new DemiNoeud();
-	/*private Noeud plusProcheOld(Point pos){//TODO pas assez bon (il faut 2 Noeud (segment) et une proportion)
-		Collection<Noeud> col=mapDecoupee.get((int)Math.floor(coeffDecoup*(pos.getX()-ds.getMinPoint().getX())));
-		Noeud res=col.iterator().next();
-		for(Noeud n:col){
-			if(n.getPosition().distance2(pos)<res.getPosition().distance2(pos))
-				res=n;
-		}
-		return res;//TODO
-	}*/
+	
 	
 	private ProjSurSegment projectionSurSegment(Point pos){
-		NoeudPourParcourt na,nb,proj;
-		na=sommetsDuGraphe.iterator().next();
-		if(na.getVoisins().iterator().hasNext())
-			nb=na.getVoisinsParcourt().iterator().next().getNoeud();
-		else
-			nb=na;
-		ProjSurSegment res=projeter(na,nb,pos);
+		ProjSurSegment res=projeter(noeudInitialPourProjection1,noeudInitialPourProjection2,pos);
 		//for(Collection<Noeud> c:mapDecoupee){
 			for(NoeudPourParcourt n:sommetsDuGraphe){
 				res=res.plusProche(n,pos);
@@ -263,7 +295,7 @@ public class Graphe{
 	private void configVoisins(List<NoeudPourParcourt> lt,NoeudPourParcourt n){
 		for(ArcType<NoeudPourParcourt> a:n.getVoisinsParcourt()){
 			NoeudPourParcourt v=a.getNoeud();
-			if(!v.fixe){
+			if(!v.fixe&&(a.isArcSurLequelOnPeutMarcher())){
 				if(v.parent==null)
 					lt.add(v);
 				double distance=n.distance+n.distance2(v);

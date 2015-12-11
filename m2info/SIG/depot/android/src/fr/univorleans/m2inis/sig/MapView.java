@@ -75,6 +75,10 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 				//if((int) event.getX()==userClickX&&(int) event.getY()==userClickY)
 				{
 					Point ps=fromDeviceToRealPoint(event.getX(),event.getY());
+					/*selectionnerNoeud=dataSource.selectionnerNoeud(ps);
+					Iterator<NoeudPourParcourt> itSel=selectionnerNoeud.iterator();
+					selectionnerNoeud_p=itSel.next().getPosition();
+					itSel.remove();postInvalidate();*/
 					if(prevPoint_cheminPropose!=null){
 						parent.setState("...");
 						long prevTime=System.currentTimeMillis();
@@ -192,6 +196,8 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 	private void preparerScene(){
 		
 	}
+	private Collection<NoeudPourParcourt> selectionnerNoeud;
+	private Point selectionnerNoeud_p;
 	public void setDataSource(IDataSource src){
 		
 		
@@ -453,6 +459,18 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 					path.moveTo(toPointNormaliseX(p),toPointNormaliseY(p));
 				
 				prev=p;
+			}
+			canvas.drawPath(path,mPaint);
+		}
+		if(selectionnerNoeud!=null){
+			path.reset();
+			mPaint.setColor(Color.RED);
+			mPaint.setStrokeWidth(3);
+			Point prev=null;
+			for(NoeudPourParcourt p:selectionnerNoeud){
+				path.moveTo(toPointNormaliseX(selectionnerNoeud_p),toPointNormaliseY(selectionnerNoeud_p));
+				path.lineTo(toPointNormaliseX(p.getPosition()),toPointNormaliseY(p.getPosition()));
+				
 			}
 			canvas.drawPath(path,mPaint);
 		}

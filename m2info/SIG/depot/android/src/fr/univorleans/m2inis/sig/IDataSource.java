@@ -11,6 +11,7 @@ public interface IDataSource{
 	Point getCenter();
 	public Point getMinPoint();
 	public Point getMaxPoint();
+	public Collection<NoeudPourParcourt> selectionnerNoeud(Point p);
 	//Point getUserLocation();//peut être null
 	//boolean isUserCentric();//la position de l'utilisateur doit être au milieu du dessin?
 	
