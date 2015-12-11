@@ -45,6 +45,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
         private float mVerticalBound;
         private Line cheminPropose;
         private boolean ignoreUserChosePoint=false;
+        private int []couleurTypeLigne;
 /*public void surfaceDestroyed(SurfaceHolder holder) {}
         public void surfaceChanged(SurfaceHolder holder, int format, int width,
             int height) {}
@@ -53,6 +54,8 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
         public MapView(Context context, AttributeSet attrs) {
         	super(context, attrs);
 			// Acquire a reference to the system Location Manager
+			
+			couleurTypeLigne=new int[]{Color.WHITE,Color.YELLOW,Color.BLUE,Color.MAGENTA};
 			
 			
 			gestureDetector=new GestureDetector(context,new GestureDetector.SimpleOnGestureListener() {
@@ -190,13 +193,12 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 		
 	}
 	public void setDataSource(IDataSource src){
-		lignes=new ArrayList<float[]>();//sinon java.util.ConcurrentModificationException dans la méthode onDraw
-		for(Line l:src.getLines())
-			lignes.add(new float[(l.getPoints().size()-1)*4]);
+		
+		
 		dataSource=src;
 		//center=src.getCenter();
 		center=new Point(0,0);//tailleNormalisationX/2,tailleNormalisationX/2);
-		pathChemins=new Path();
+		
 		
 		Point min=dataSource.getMinPoint();
 		Point max=dataSource.getMaxPoint();
@@ -207,15 +209,16 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
     	mulNormalisationX=2*tailleNormalisationX/dx;
     	mulNormalisationY=2*tailleNormalisationY/dy;
 		syncZoom();
-    	
-		drawCheminsPossibles(pathChemins);
-    	
+    	pathChemins=new Path[src.getLineTypeNumber()];
+    	for(int type=0;type<src.getLineTypeNumber();++type){
+			pathChemins[type]=new Path();
+			drawCheminsPossibles(pathChemins[type],type);
+    	}
 		setDataSource_complete=true;
 	}
 	private double tailleNormalisationX=500;
 	private double tailleNormalisationY=500;
 	private boolean setDataSource_complete;
-	private List<float[]> lignes;
 	private IDataSource dataSource;
 	int userClickX,userClickY;
 	Point prevPoint_cheminPropose;
@@ -289,7 +292,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
         height=h;
     }
 	private int width,height;
-    private Path pathChemins;
+    private Path[] pathChemins;
 	//private long prevTime;
 	/*Transformer de point normalisé vers point device*/
 	private void transformer(Canvas canvas){
@@ -427,8 +430,12 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 		mPaint.setStrokeWidth(4);
 		//canvas.drawPoint((float)((0)*mulx+width/2),(float)((0)*muly+height/2),mPaint);
 		if(pathChemins!=null){
-			mPaint.setColor(Color.rgb(255,255,255));
-			canvas.drawPath(pathChemins,mPaint);
+			
+			for(int type=0;type<dataSource.getLineTypeNumber();++type){
+				mPaint.setColor(couleurTypeLigne[type]);
+				canvas.drawPath(pathChemins[type],mPaint);
+				
+			}
 		}
 		
 		mPaint.setStyle(Paint.Style.STROKE);
@@ -512,13 +519,13 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
         	invalidate();
 		parent.checkError();
     }
-    private void drawCheminsPossibles(Path pathChemins){
+    private void drawCheminsPossibles(Path pathChemins,int type){
     	Random rand=new Random(0);
     	mPaint.setStrokeWidth(2);
-        Iterator<float[]>itt=lignes.iterator();
         
         
-		for(Line l:dataSource.getLines()){
+        
+		for(Line l:dataSource.getLines(type)){
 			mPaint.setColor(Color.rgb(rand.nextInt(155)+100,rand.nextInt(255),rand.nextInt(255)));
 			Point prev=null;
 			//float[]tb=itt.next();

@@ -6,6 +6,7 @@ public class ArcType<N>{
 		type=type_;
 	}
 	public static final int route=1,cheminPietonier=2,coursDEau=3,tramway=4;
+	public static final int nombreDeType=4;//TODO mettre à jour quand on change le nombre de type
 	private N n;
 	private int type;
 	public N getNoeud(){

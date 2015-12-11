@@ -26,10 +26,12 @@ public class LocalDataSource implements IDataSource{
 	/*public Building getBuildingAt(Point p){//a une liste de services
 		return null;//TODO
 	}*/
-	public Collection<Line> getLines(){
-		return graphe.getLines();
+	public Collection<Line> getLines(int type){
+		return graphe.getLines(type);
 	}
-	
+	public int getLineTypeNumber(){
+		return ArcType.nombreDeType;
+	}
 	public BatimentUniv getBuilding(String nom){
 		return zoneManager.getBuilding(nom);
 	}

@@ -8,10 +8,10 @@ public class Graphe{
 		
 		//if(true)throw new RuntimeException("t="+mapDecoupee.size());
 	}*/
-	public Collection<Line> getLines(){
-		return lines;
+	public Collection<Line> getLines(int type){
+		return lines.get(type);
 	}
-	private Collection<Line> lines=new ArrayList<Line>();
+	private List<Collection<Line>> lines=new ArrayList<Collection<Line>>();
 	private void readLineAsPoint(String ln){
 		Scanner sc=new Scanner(ln);
 		double x=Double.parseDouble(sc.next());
@@ -34,15 +34,18 @@ public class Graphe{
 		while(sc.hasNext()){
 			
 			int numAutre=Integer.parseInt(sc.next());
+			int type=Integer.parseInt(sc.next());
 			NoeudPourParcourt autre=sommetsDuGraphe.get(numAutre);
-			nActuel.add(autre,Integer.parseInt(sc.next()));
+			nActuel.add(autre,type);
 			Line line=new Line();
 			line.addPoint(nActuel.getPosition());
 			line.addPoint(autre.getPosition());
-			lines.add(line);
+			lines.get(type-1).add(line);
 		}
 	}
 	private Graphe(ILoaderObserver obs,java.io.InputStream fLignes)throws IOException{
+		for(int type=1;type<=ArcType.nombreDeType;++type)
+			lines.add(new ArrayList<Line>());
 		BufferedReader br=null;
 		long lcpt=0;
 		try{
