@@ -20,8 +20,8 @@ public class LocalDataSource implements IDataSource{
 	public Point getCenter(){
 		return graphe.getCenter();
 	}
-	public Line computePath(Point begin,Point end){
-		return graphe.computePath(begin,end);
+	public Line computePath(Point begin,Point end,Collection<NoeudPourParcourt>beginAlternatif,Collection<NoeudPourParcourt>endAlternatif){
+		return graphe.computePath(begin,end,beginAlternatif,endAlternatif);
 	}
 	public Collection<NoeudPourParcourt> selectionnerNoeud(Point p){
 		return graphe.selectionnerNoeud(p);

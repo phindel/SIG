@@ -1,5 +1,5 @@
 package fr.univorleans.m2inis.sig;
-import java.util.List;
+import java.util.*;
 import android.graphics.Color;
 public class Zone{
 	public Zone(String nom_,List<Point>polygoneExterieur_,int type_){
@@ -21,6 +21,15 @@ public class Zone{
 		}
 		minPoint=new Point(minx,miny);
 		maxPoint=new Point(maxx,maxy);
+	}
+	public Point getCenter(){
+		return new Point((minPoint.getX()+maxPoint.getX())*.5,(minPoint.getY()+maxPoint.getY())*.5);
+	}
+	public int getType(){
+		return type;
+	}
+	public Collection<NoeudPourParcourt> getPointEntree(){
+		return null;//TODO
 	}
 	private int type;
 	public static final int lac=1,foret=2,parking=3,batimentUniv=4,autreBatiment=5;

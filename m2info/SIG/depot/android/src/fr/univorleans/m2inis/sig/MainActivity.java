@@ -59,7 +59,7 @@ public class MainActivity extends Activity {
 		TextView textview=(TextView)findViewById(R.id.textview);
 		textview.setText("Hello!");
 		textEtat=textview;
-		buttonItineraire=(Button)findViewById(R.id.buttonItineraire);
+		buttonRechParkingLePlusProcheLocalisationActuelle=(Button)findViewById(R.id.buttonRechParkingLePlusProcheLocalisationActuelle);
 		listeDeZones=(ListView)findViewById(R.id.listeDeZones);
 		LocationManager locationManager= (LocationManager)  getSystemService(Context.LOCATION_SERVICE);
 
@@ -68,7 +68,9 @@ public class MainActivity extends Activity {
 			public void onLocationChanged(Location l) {
 			// Called when a new location is found by the network location provider.
 			//makeUseOfNewLocation(location);
+			userLocation=new Point(l.getLongitude(),l.getLatitude());
 			mMapView.setUserLocation(l.getLongitude(),l.getLatitude());
+			buttonRechParkingLePlusProcheLocalisationActuelle.setEnabled(true);
 			//throw new RuntimeException("Ca marche "+getClass());
 			}
 
@@ -94,13 +96,20 @@ public class MainActivity extends Activity {
         //setContentView(mSimulationView);
         mMapView=(MapView)findViewById(R.id.zDessin);
         mMapView.setParent(this);
-        controleur=new Controleur();
+        controleur=new Controleur(mMapView);
         mMapView.setOnZoneSelectedListener(controleur);
+        mMapView.setOnPointSelectedListener(controleur);
         Thread thr=new Thread(){
         	public void run(){
         		try{
+        			long prevTime=System.currentTimeMillis();
         			dataSource=new LocalDataSource(mMapView,getResources().openRawResource(R.raw.line),getResources().openRawResource(R.raw.zones));
+        			long time=System.currentTimeMillis();
+					String txt="";
+					txt=(time-prevTime)+" ms";
+					System.out.println("Durée du chargement: "+txt);
         			mMapView.setDataSource(dataSource);
+        			controleur.setDataSource(dataSource);
         			runOnUiThread(new Runnable() {
 
 					@Override
@@ -125,12 +134,12 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
     }
-	private Button buttonItineraire;
+	private Button buttonRechParkingLePlusProcheLocalisationActuelle;
     @Override
     protected void onPause() {
         super.onPause();
     }
-    public void setRechItineraire(boolean b){
+    /*public void setRechItineraire(boolean b){
     	rechItineraire=b;
     	if(rechItineraire)
     		buttonItineraire.setText("Annuler la recherche");
@@ -144,7 +153,19 @@ public class MainActivity extends Activity {
 	public void rechItineraire(View view) {
 		//
 		setRechItineraire(!rechItineraire);
+	}*/
+	private Point userLocation;
+	public void rechParkingLePlusProcheLocalisationActuelle(View view){
+		controleur.rechParkingLePlusProche(userLocation);
 	}
+	public void rechParkingLePlusProcheDuBatimentUnivActuel(View view){
+		controleur.rechParkingLePlusProcheDuBatimentUnivActuel();
+	}
+	public void rechItineraire_etape1(View view){
+		controleur.rechItineraire_etape1();
+		mMapView.setZoneSelection(false);
+	}
+	
 	public void afficherListeBatiment(View view) {
 		ArrayAdapter<String> arr=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
 		for(String nom:dataSource.getBuildingsName()){

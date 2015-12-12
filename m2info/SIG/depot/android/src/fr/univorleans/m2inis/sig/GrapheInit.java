@@ -3,9 +3,9 @@ import java.io.*;
 import java.util.*;
 public class GrapheInit{
 	
-	public GrapheInit(File lignes)throws IOException{
+	public GrapheInit(File lignes,File zones)throws IOException{
 		lireLignes(lignes);
-		
+		lireZones(zones);
 		int t=2000;//TODO constante magique
 		mapDecoupee=new ArrayList<Collection<NoeudPourTraitement> >(t);
 		
@@ -72,6 +72,22 @@ public class GrapheInit{
 	}
 	private double minx,maxx,miny,maxy;
 	private Collection<Zone> zones=new ArrayList<Zone>();
+	private void lireZones(File lignes)throws IOException{
+		BufferedReader br=null;
+		try{
+			br=new BufferedReader(new FileReader(lignes));
+			String ln="";
+			while((ln=br.readLine())!=null){
+				//readZone(ln);
+			}
+			
+			
+			
+		}finally{
+			if(br!=null)
+				br.close();
+		}
+	}
 	private void lireLignes(File lignes)throws IOException{
 		
 		int lcpt=0;
@@ -124,7 +140,7 @@ public class GrapheInit{
 				br.close();
 		}
 	}
-	private void printTo(File out)throws IOException{
+	private void printLineTo(File out)throws IOException{
 		PrintStream ps=null;
 		try{
 			ps=new PrintStream(out);
@@ -144,8 +160,10 @@ public class GrapheInit{
 	}
 	public static void main(String[]args){
 		try{
-			GrapheInit gi=fromLines(new File(args[0]));
-			gi.printTo(new File(args[1]));
+			GrapheInit gi=fromLines(new File(args[0]),new File(args[1]));
+			gi.printLineTo(new File(args[2]));
+			//gi.printZoneTo(new File(args[3]));
+			
 		}catch(IOException io){
 			System.err.println(io);
 		}
@@ -305,16 +323,16 @@ public class GrapheInit{
 	private NoeudPourTraitement creerSiInexistant(Point pos){
 		Collection<NoeudPourTraitement> col=mapDecoupee.get((int)Math.floor(coeffDecoup*(pos.getX()-minx)));
 		for(NoeudPourTraitement n:col){
-			if(n.getPosition().distance2(pos)<1e-4)
+			if(n.getPosition().distance2(pos)<3e-5)
 				return n;
 		}
 		NoeudPourTraitement n=new NoeudPourTraitement(pos,col.size());
 		col.add(n);
 		return n; 
 	}
-	public static GrapheInit fromLines(File lignes)throws IOException{
+	public static GrapheInit fromLines(File lignes,File zones)throws IOException{
 		
-		GrapheInit g=new GrapheInit(lignes);
+		GrapheInit g=new GrapheInit(lignes,zones);
 		
 		
 		return g;

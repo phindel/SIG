@@ -44,6 +44,10 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
         private float mHorizontalBound;
         private float mVerticalBound;
         private Line cheminPropose;
+        public void setItineraire(Line ch){
+        	cheminPropose=ch;
+        	postInvalidate();
+        }
         private boolean ignoreUserChosePoint=false;
         private int []couleurTypeLigne;
 /*public void surfaceDestroyed(SurfaceHolder holder) {}
@@ -79,7 +83,15 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 					Iterator<NoeudPourParcourt> itSel=selectionnerNoeud.iterator();
 					selectionnerNoeud_p=itSel.next().getPosition();
 					itSel.remove();postInvalidate();*/
-					if(prevPoint_cheminPropose!=null){
+					if(zoneSelection){
+						//TODO
+						//onZoneSelectedListener.onZoneSelected();
+					}else{
+						onPointSelectedListener.onPointSelected(ps);
+					}
+					
+					
+					/*if(prevPoint_cheminPropose!=null){
 						parent.setState("...");
 						long prevTime=System.currentTimeMillis();
 						cheminPropose=dataSource.computePath(ps,prevPoint_cheminPropose);
@@ -94,7 +106,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 						parent.setState("Calcul: "+(System.currentTimeMillis()-prevTime)+"ms");
 						postInvalidate();
 						//parent.setState("Dist: "+dist);
-					}
+					}*/
 					prevPoint_cheminPropose=ps;
 				}
 				if(true){
@@ -312,12 +324,12 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 		canvas.translate((float)(tailleNormalisationX),(float)(-tailleNormalisationY));//on met entre 0 et tailleNormalisationX*2, -tailleNormalisationY*2 et 0
 		//canvas.translate((float)(width/2),(float)(height/2));
 		//canvas.scale((float)mulx*1e-4f,(float)muly*1e-4f);
-		mPaint.setColor(Color.YELLOW);
+		/*mPaint.setColor(Color.YELLOW);
 		canvas.drawCircle(0,0,30,mPaint);
 		canvas.drawCircle(-500,-500,10,mPaint);
 		canvas.drawCircle(500,-500,10,mPaint);
 		canvas.drawCircle(-500,500,10,mPaint);
-		canvas.drawCircle(500,500,10,mPaint);
+		canvas.drawCircle(500,500,10,mPaint);*/
 	}
 	private Point fromDevicetoNormalisedPoint(float x_,float y_){
     	double x=x_;
@@ -342,6 +354,14 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
     	onZoneSelectedListener=onZoneSelectedListener_;
     }
     private OnZoneSelectedListener onZoneSelectedListener;
+    public void setOnPointSelectedListener(OnPointSelectedListener onPointSelectedListener_){
+    	onPointSelectedListener=onPointSelectedListener_;
+    }
+    private OnPointSelectedListener onPointSelectedListener;
+    public void setZoneSelection(boolean zoneSelection_){
+    	zoneSelection=zoneSelection_;
+    }
+    private boolean zoneSelection=true;
     public void selectionnerZone(Zone z){
     	zoneSelectionnee=z;
     	postInvalidate();
@@ -487,7 +507,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 			
 			mPaint.setColor(Color.RED);
 			mPaint.setStrokeWidth(3);
-			canvas.drawRect(toPointNormaliseX(zoneSelectionnee.getMinPoint()),toPointNormaliseY(zoneSelectionnee.getMinPoint()),toPointNormaliseX(zoneSelectionnee.getMaxPoint()),toPointNormaliseY(zoneSelectionnee.getMaxPoint()),mPaint);
+			canvas.drawRect(toPointNormaliseX(zoneSelectionnee.getMinPoint())-10,toPointNormaliseY(zoneSelectionnee.getMinPoint())-10,toPointNormaliseX(zoneSelectionnee.getMaxPoint())+10,toPointNormaliseY(zoneSelectionnee.getMaxPoint())+10,mPaint);
 		}
 		mPaint.setStrokeWidth(6);
 		mPaint.setColor(Color.YELLOW);
@@ -540,8 +560,8 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 		String txt="";
 		
 			txt=(time-prevTime)+" ms";
-		
-		System.out.println("MapView "+txt);
+		if(setDataSource_complete)
+			System.out.println("MapView "+txt+"  centre (coord réelles):"+fromDeviceToRealPoint(0*.5f,0*.5f));
                 
         mPaint.setTextSize(20);
 		mPaint.setColor(Color.RED);

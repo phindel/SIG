@@ -38,11 +38,12 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="Hello, I am a TextView" />
-		<Button android:id="@+id/buttonItineraire"
+		<Button android:id="@+id/buttonRechParkingLePlusProcheLocalisationActuelle"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Rechercher le parking\n le plus proche"
-		android:onClick="rechItineraire" />
+		android:enabled="false"
+		android:text="Rechercher le parking\nle plus proche\ndepuis votre position"
+		android:onClick="rechParkingLePlusProcheLocalisationActuelle" />
 		<Button 
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -59,11 +60,11 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="Parking le plus proche"
-		android:onClick="" />
+		android:onClick="rechParkingLePlusProcheDuBatimentUnivActuel" />
 		<Button 
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Y aller"
-		android:onClick="" />
+		android:text="Selectionner le point de départ"
+		android:onClick="rechItineraire_etape1" />
 	</LinearLayout>
 </LinearLayout>

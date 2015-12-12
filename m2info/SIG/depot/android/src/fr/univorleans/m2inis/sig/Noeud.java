@@ -20,6 +20,10 @@ public class Noeud<N extends Noeud> implements java.io.Serializable{
 	public Point getPosition(){
 		return pos;
 	}
+	@Override
+	public String toString(){
+		return pos.toString();
+	}
 	
 	public Iterable<ArcType<Noeud<N>>> getVoisins(){
 		return voisins;

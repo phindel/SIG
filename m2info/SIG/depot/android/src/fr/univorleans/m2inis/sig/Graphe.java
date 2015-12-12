@@ -225,7 +225,7 @@ public class Graphe{
 		//return null;//TODO
 		return res;//new ProjSurSegment(na,proj,nb);
 	}
-	public Line computePath(Point begin,Point end){
+	public Line computePath(Point begin,Point end,Collection<NoeudPourParcourt>beginAlternatif,Collection<NoeudPourParcourt>endAlternatif){
 		noeudDebut.reinit(begin);
 		noeudFin.reinit(end);
 		Collection<NoeudPourParcourt>lbegin=new LinkedList<NoeudPourParcourt>();
@@ -259,9 +259,9 @@ public class Graphe{
 			}
 			
 		}
-		return computePath(begin,end,lbegin,lend);
+		return computePath1(begin,end,lbegin,lend);
 	}
-	private Line computePath(Point realBegin,Point realEnd,Collection<NoeudPourParcourt>begin,Collection<NoeudPourParcourt>end){
+	private Line computePath1(Point realBegin,Point realEnd,Collection<NoeudPourParcourt>begin,Collection<NoeudPourParcourt>end){
 		Line res=new Line();
 		//res.addPoint(begin.iterator().next().pos);
 		//res.addPoint(end.iterator().next().pos);
@@ -328,7 +328,7 @@ public class Graphe{
 			n.fixe=true;
 			n.marquer();
 			configVoisins(lt,n);
-			System.out.println(end+" "+n);
+			//System.out.println(end+" "+n);
 			if(end.contains(n))
 				return n;
 		}
