@@ -232,6 +232,11 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 			pathChemins[type]=new Path();
 			drawCheminsPossibles(pathChemins[type],type);
     	}
+    	pathPoints=new Path();
+    	for(NoeudPourParcourt n:dataSource.getSommetsDuGraphe()){
+        	Point p=n.getPosition();
+        	pathPoints.addCircle(toPointNormaliseX(p),toPointNormaliseY(p),2,Path.Direction.CW);
+        }
 		setDataSource_complete=true;
 	}
 	private double tailleNormalisationX=500;
@@ -311,6 +316,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
     }
 	private int width,height;
     private Path[] pathChemins;
+    private Path pathPoints;
 	//private long prevTime;
 	/*Transformer de point normalisé vers point device*/
 	private void transformer(Canvas canvas){
@@ -446,8 +452,8 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 			canvas.drawPath(path,mPaint);
 		}
         mPaint.setStyle(Paint.Style.STROKE);
-		mPaint.setStrokeCap(Paint.Cap.ROUND);
-		mPaint.setStrokeJoin(Paint.Join.ROUND);
+		/*mPaint.setStrokeCap(Paint.Cap.ROUND);
+		mPaint.setStrokeJoin(Paint.Join.ROUND);*/
         mPaint.setStrokeWidth(2);
 		mPaint.setColor(Color.YELLOW);
 		/*for(Point p:colPt){
@@ -471,6 +477,10 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 				canvas.drawPath(pathChemins[type],mPaint);
 				
 			}
+			mPaint.setColor(Color.WHITE);
+			mPaint.setStrokeWidth(1);
+			mPaint.setStyle(Paint.Style.FILL);
+			canvas.drawPath(pathPoints,mPaint);
 		}
 		
 		mPaint.setStyle(Paint.Style.STROKE);

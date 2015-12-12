@@ -50,6 +50,9 @@ public class Graphe{
 		sommetsDuGraphe.add(new NoeudPourParcourt(new Point(x,y),sommetsDuGraphe.size()));
 		
 	}
+	public Iterable<NoeudPourParcourt> getSommetsDuGraphe(){
+		return sommetsDuGraphe;
+	}
 	private List<NoeudPourParcourt> sommetsDuGraphe=new ArrayList<NoeudPourParcourt>();
 	private void readLineAsListeDAdjacence(int numPoint,String ln){
 		NoeudPourParcourt nActuel=sommetsDuGraphe.get(numPoint);

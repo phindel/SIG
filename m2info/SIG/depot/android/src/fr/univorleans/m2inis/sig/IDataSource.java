@@ -8,6 +8,7 @@ public interface IDataSource{
 	Collection<String> getBuildingsName();//pour pouvoir afficher la liste des noms
 	Collection<Zone> getZones();//pour affichage
 	Collection<Line> getLines(int type);
+	public Iterable<NoeudPourParcourt> getSommetsDuGraphe();
 	int getLineTypeNumber();
 	Point getCenter();
 	public Point getMinPoint();
