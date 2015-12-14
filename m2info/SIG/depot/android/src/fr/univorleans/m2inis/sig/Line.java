@@ -4,7 +4,7 @@ import java.util.*;
 public class Line{
 	public Line(){}
 	
-	void addPoint(Point p){
+	public void addPoint(Point p){
 		//if(true)throw new RuntimeException("Ca marche!");
 		pts.add(p);
 	}

@@ -1,7 +1,8 @@
 package fr.univorleans.m2inis.sig;
 import java.util.*;
 public interface IDataSource{
-	Line computePath(Point begin,Point end,Collection<NoeudPourParcourt>beginAlternatif,Collection<NoeudPourParcourt>endAlternatif);
+	Line computePath(Collection<Point> begin,Collection<Point> end,Collection<NoeudPourParcourt>beginAlternatif,Collection<NoeudPourParcourt>endAlternatif,String nomProjectionPlan);
+	void registerProjectionPlan(String nom,Collection<Point> begin,Collection<Point> end);
 	//Building getBuildingAt(Point p);//a une liste de services
 	BatimentUniv getBuilding(String nom);
 	Collection<Zone> getZoneAt(Point p);

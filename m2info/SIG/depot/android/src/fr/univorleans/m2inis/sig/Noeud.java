@@ -35,6 +35,10 @@ public class Noeud<N extends Noeud> implements java.io.Serializable{
 		Noeud n=(Noeud)o;
 		return pos.equals(n.pos);
 	}
+	@Override
+	public int hashCode(){
+		return pos.hashCode();
+	}
 	/*public Collection<Noeud> getVoisins(){
 		return voisins;
 	}*/

@@ -4,17 +4,25 @@ import java.util.*;
 Noeud de début ou de fin
 */
 public class DemiNoeud extends NoeudPourParcourt{
-	public DemiNoeud(){
-		super(null,-1);//-1 -> pas d'affichage des arcs lié à ce noeud
+	public DemiNoeud(Point pos){
+		super(pos,-1);//-1 -> pas d'affichage des arcs lié à ce noeud
 	}
-	public void reinit(Point pos){
+	/*public void reinit(Point pos){
 		reinit();
 		for(NoeudPourParcourt n:referencePar)
 			n.noeudFin=null;
 		this.pos=pos;
 		voisinsDebut.clear();
 		referencePar.clear();
+	}*/
+	public void clear(){
+		reinit();
+		for(NoeudPourParcourt n:referencePar)//gestion de la mémoire
+			n.noeudFin=null;
+		voisinsDebut.clear();
+		referencePar.clear();
 	}
+	
 	/*@Override
 	public Collection<Noeud> getVoisins(){
 		return voisinsDebut;
@@ -32,5 +40,14 @@ public class DemiNoeud extends NoeudPourParcourt{
 		//TODO
 		referencePar.add(n);
 		n.noeudFin=this;
+	}
+	public void dormir(){
+		for(NoeudPourParcourt n:referencePar)
+			n.noeudFin=null;
+		reinit();
+	}
+	public void reveiller(){
+		for(NoeudPourParcourt n:referencePar)
+			n.noeudFin=this;
 	}
 }

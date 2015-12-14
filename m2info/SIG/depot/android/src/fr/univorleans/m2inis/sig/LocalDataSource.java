@@ -23,8 +23,13 @@ public class LocalDataSource implements IDataSource{
 	public Iterable<NoeudPourParcourt> getSommetsDuGraphe(){
 		return graphe.getSommetsDuGraphe();
 	}
-	public Line computePath(Point begin,Point end,Collection<NoeudPourParcourt>beginAlternatif,Collection<NoeudPourParcourt>endAlternatif){
-		return graphe.computePath(begin,end,beginAlternatif,endAlternatif);
+	public void registerProjectionPlan(String nom,Collection<Point> begin,Collection<Point> end){
+		mProjectionPlan.put(nom,new ProjectionPlan(graphe,begin,end));
+	}
+	private Map<String,ProjectionPlan> mProjectionPlan=new HashMap<String,ProjectionPlan>();
+	public Line computePath(Collection<Point> begin,Collection<Point> end,Collection<NoeudPourParcourt>beginAlternatif,Collection<NoeudPourParcourt>endAlternatif,String nomProjectionPlan){
+		
+		return graphe.computePath(begin,end,beginAlternatif,endAlternatif,mProjectionPlan.get(nomProjectionPlan));
 	}
 	public Collection<NoeudPourParcourt> selectionnerNoeud(Point p){
 		return graphe.selectionnerNoeud(p);

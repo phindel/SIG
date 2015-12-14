@@ -1,5 +1,5 @@
 
-package fr.univorleans.m2inis.sig;
+import fr.univorleans.m2inis.sig.*;
 
 public class NoeudPourTraitement extends Noeud<NoeudPourTraitement>{
 	public NoeudPourTraitement(Point pos,int id){

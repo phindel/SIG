@@ -1,4 +1,4 @@
-package fr.univorleans.m2inis.sig;
+import fr.univorleans.m2inis.sig.*;
 import java.io.*;
 import java.util.*;
 public class GrapheInit{

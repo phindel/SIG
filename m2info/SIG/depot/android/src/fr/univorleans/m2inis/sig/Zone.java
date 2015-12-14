@@ -28,8 +28,11 @@ public class Zone{
 	public int getType(){
 		return type;
 	}
-	public Collection<NoeudPourParcourt> getPointEntree(){
-		return null;//TODO
+	/*
+	Retourne le centre de la zone si on ne sait pas calculer les points d'entrée
+	*/
+	public Point getPointEntree(Collection<NoeudPourParcourt> pointsDentree){
+		return getCenter();//TODO
 	}
 	private int type;
 	public static final int lac=1,foret=2,parking=3,batimentUniv=4,autreBatiment=5;
@@ -40,7 +43,7 @@ public class Zone{
 			case foret:
 				return Color.GREEN;
 			case parking:
-				return Color.WHITE;
+				return Color.rgb(200,200,200);
 			case batimentUniv:
 				return Color.RED;
 			case autreBatiment:

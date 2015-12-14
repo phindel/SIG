@@ -1,6 +1,6 @@
-import java.sql.*; 
-import java.util.*; 
-import org.postgis.*; 
+import java.sql.*;
+import java.util.*;
+import org.postgis.*;
 import java.io.*;
 public class ImporteurJDBC { 
 
@@ -11,13 +11,14 @@ public static void main(String[] args) {
 		
 			
   try { 
+    
     ps=new PrintStream(new File(args[0]));
     /* 
     * Load the JDBC driver and establish a connection. 
     */
     Class.forName("org.postgresql.Driver"); 
-    String url = "jdbc:postgresql://localhost:5432/univ2"; 
-    conn = DriverManager.getConnection(url, "postgres", "a"); 
+    String url = "jdbc:postgresql://192.168.46.196:5433/leton"; 
+    conn = DriverManager.getConnection(url, "leton", "leopold"); 
     /* 
     * Add the geometry types to the connection. Note that you 
     * must cast the connection to the pgsql-specific connection 
@@ -25,7 +26,8 @@ public static void main(String[] args) {
     */
     ((org.postgresql.PGConnection)conn).addDataType("geometry",Class.forName("org.postgis.PGgeometry"));
     ((org.postgresql.PGConnection)conn).addDataType("box3d",Class.forName("org.postgis.PGbox3d"));
-
+	GrapheJDBC grapĥeJDBC=new GrapheJDBC(conn);
+	grapĥeJDBC.printLineTo(new File(args[1]));
     /* 
     * Create a statement and execute a select query. 
     */ 
@@ -68,19 +70,19 @@ public static void main(String[] args) {
 		}
 		else if(!batiment.equals("")){
 			ps.print("AutreBatiment <TODO> ");
-			printPointsDeLaZone(ps,(Polygon)geom.getGeometry());
+			printPointsDeLaZone(ps,(ComposedGeom)geom.getGeometry());
 			ps.println();
 		}else if(amenity.equals("parking")){
 			ps.print("Parking <TODO> ");
-			printPointsDeLaZone(ps,(Polygon)geom.getGeometry());
+			printPointsDeLaZone(ps,(ComposedGeom)geom.getGeometry());
 			ps.println();
 		}else if(landuse.equals("forest")){
 			ps.print("Foret <TODO> ");
-			printPointsDeLaZone(ps,(Polygon)geom.getGeometry());
+			printPointsDeLaZone(ps,(ComposedGeom)geom.getGeometry());
 			ps.println();
 		}else if(landuse.equals("basin")){
 			ps.print("Lac <TODO> ");
-			printPointsDeLaZone(ps,(Polygon)geom.getGeometry());
+			printPointsDeLaZone(ps,(ComposedGeom)geom.getGeometry());
 			ps.println();
 		}
 	} 
@@ -91,6 +93,12 @@ catch( Exception e ) {
   e.printStackTrace(); 
   } 
 } 
+private static void printPointsDeLaZone(PrintStream ps,ComposedGeom poly)throws IOException{
+	if(poly instanceof MultiPolygon )
+		printPointsDeLaZone(ps,((MultiPolygon)poly).getPolygon(0));
+	else
+		printPointsDeLaZone(ps,(Polygon)poly);
+}
 	private static void printPointsDeLaZone(PrintStream ps,Polygon poly)throws IOException{
 		
 		LinearRing rng = poly.getRing(0); 

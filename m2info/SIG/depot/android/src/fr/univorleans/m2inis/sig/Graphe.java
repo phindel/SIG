@@ -151,7 +151,7 @@ public class Graphe{
 	public Point getCenter(){
 		return new Point((minx+maxx)*.5,(miny+maxy)*.5);
 	}
-	static class ProjSurSegment{
+	public static class ProjSurSegment{
 		/*
 		Il s'agit du point a*coef+b*(1-coef)
 		*/
@@ -214,10 +214,10 @@ public class Graphe{
 		return new ProjSurSegment(a,proj,pos.distance2(proj),b);
 	}
 	//private Collection<NoeudPourParcourt> graphe;
-	private DemiNoeud noeudDebut=new DemiNoeud(),noeudFin=new DemiNoeud();
+	//private DemiNoeud noeudDebut=new DemiNoeud(),noeudFin=new DemiNoeud();
 	
 	
-	private ProjSurSegment projectionSurSegment(Point pos){
+	public ProjSurSegment projectionSurSegment(Point pos){
 		ProjSurSegment res=projeter(noeudInitialPourProjection1,noeudInitialPourProjection2,pos);
 		//for(Collection<Noeud> c:mapDecoupee){
 			for(NoeudPourParcourt n:sommetsDuGraphe){
@@ -228,7 +228,65 @@ public class Graphe{
 		//return null;//TODO
 		return res;//new ProjSurSegment(na,proj,nb);
 	}
-	public Line computePath(Point begin,Point end,Collection<NoeudPourParcourt>beginAlternatif,Collection<NoeudPourParcourt>endAlternatif){
+	
+	public Line computePath(Collection<Point> begin,Collection<Point> end,Collection<NoeudPourParcourt>beginAlternatif,Collection<NoeudPourParcourt>endAlternatif,ProjectionPlan projectionPlan){
+		if(begin==null||end==null)throw new IllegalArgumentException("Pas pris en charge");//TODO
+		/*if((begin==null)==(beginAlternatif==null))
+			throw new IllegalArgumentException("Une option à la fois");
+		if((end==null)==(endAlternatif==null))
+			throw new IllegalArgumentException("Une option à la fois");*/
+		
+		long prevTime=System.currentTimeMillis();
+		ProjectionPlan ppDynamic=null;
+		if(begin.size()>0||end.size()>0){
+			ppDynamic=new ProjectionPlan(this,begin,end);
+			ppDynamic.reveiller();
+		}
+		if(projectionPlan!=null)
+			projectionPlan.reveiller();
+		long time=System.currentTimeMillis();
+		System.out.println("computePath preparation: "+(time-prevTime)+" ms");
+		/*ProjSurSegment projBegin=projectionSurSegment(begin);
+		ProjSurSegment projEnd=projectionSurSegment(end);
+		
+		noeudDebut.reinit(projBegin.getProj());
+		noeudFin.reinit(projEnd.getProj());
+		lbegin.add(noeudDebut);
+		lend.add(noeudFin);
+		if(projBegin.getA()==projEnd.getA()&&projBegin.getB()==projEnd.getB()){
+			noeudDebut.addDebut(noeudFin);
+			noeudFin.addFin(noeudDebut);
+		}else{
+			noeudDebut.addDebut(projBegin.getA());
+			if(projBegin.getB()!=projBegin.getA())//arrive quand le point d'un segment le plus proche d'un point est à une des extrémités
+				noeudDebut.addDebut(projBegin.getB());
+		
+			noeudFin.addFin(projEnd.getA());
+			if(projEnd.getA()!=projEnd.getB())
+				noeudFin.addFin(projEnd.getB());
+		}*/
+		
+		Collection<NoeudPourParcourt> lbegin=new ArrayList<NoeudPourParcourt>();
+		Set<NoeudPourParcourt>lend=new HashSet<NoeudPourParcourt>();
+		if(ppDynamic!=null){
+			lbegin.addAll(ppDynamic.getLbegin());
+			lend.addAll(ppDynamic.getLend());
+		}
+		if(projectionPlan!=null){
+			lbegin.addAll(projectionPlan.getLbegin());
+			lend.addAll(projectionPlan.getLend());
+		}
+		Line res=computePath1(lbegin,lend);
+		if(projectionPlan!=null)
+			projectionPlan.dormir();
+		if(ppDynamic!=null)
+			ppDynamic.clear();
+		
+		
+		return res;
+	}
+	
+	/*public Line computePath(Point begin,Point end,Collection<NoeudPourParcourt>beginAlternatif,Collection<NoeudPourParcourt>endAlternatif){
 		noeudDebut.reinit(begin);
 		noeudFin.reinit(end);
 		Collection<NoeudPourParcourt>lbegin=new LinkedList<NoeudPourParcourt>();
@@ -240,7 +298,7 @@ public class Graphe{
 			/*lbegin.add(noeudDebut);
 			lend.add(noeudFin);
 			noeudDebut.addDebut(plusProcheOld(begin));
-			noeudFin.addFin(plusProcheOld(end));*/
+			noeudFin.addFin(plusProcheOld(end));* /
 			ProjSurSegment projBegin=projectionSurSegment(begin);
 			ProjSurSegment projEnd=projectionSurSegment(end);
 			
@@ -263,8 +321,8 @@ public class Graphe{
 			
 		}
 		return computePath1(begin,end,lbegin,lend);
-	}
-	private Line computePath1(Point realBegin,Point realEnd,Collection<NoeudPourParcourt>begin,Collection<NoeudPourParcourt>end){
+	}*/
+	private Line computePath1(Collection<NoeudPourParcourt>begin,Set<NoeudPourParcourt>end){
 		Line res=new Line();
 		//res.addPoint(begin.iterator().next().pos);
 		//res.addPoint(end.iterator().next().pos);
@@ -282,13 +340,15 @@ public class Graphe{
 		liste.addAll(begin);
 		NoeudPourParcourt n=algoDijkstra(liste,end);
 		if(n!=null){
-			res.addPoint(realEnd);
+			//res.addPoint(realEnd);
+			//TODO ajouter la fin normale
 			while(n.parent!=n){
 				res.addPoint(n.getPosition());
 				n=n.parent;
 			}
 			res.addPoint(n.getPosition());
-			res.addPoint(realBegin);
+			//TODO ajouter le début normal
+			//res.addPoint(realBegin);
 		}else{
 			res.addPoint(begin.iterator().next().getPosition());
 			res.addPoint(end.iterator().next().getPosition());
@@ -325,13 +385,13 @@ public class Graphe{
 		}
 		return null;
 	}
-	private NoeudPourParcourt algoDijkstra(List<NoeudPourParcourt> lt,Collection<NoeudPourParcourt>end){
+	private NoeudPourParcourt algoDijkstra(List<NoeudPourParcourt> lt,Set<NoeudPourParcourt>end){
 		while(lt.size()>0){
 			NoeudPourParcourt n=plusProche(lt);
 			n.fixe=true;
 			n.marquer();
 			configVoisins(lt,n);
-			//System.out.println(end+" "+n);
+			System.out.println(lt.size()+" "+n);
 			if(end.contains(n))
 				return n;
 		}
