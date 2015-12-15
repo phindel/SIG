@@ -367,12 +367,39 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
     public void setZoneSelection(boolean zoneSelection_){
     	zoneSelection=zoneSelection_;
     }
+    private void moveRealPointToDevicePoint(Point real,Point dev){
+    	Point norm=new Point(toPointNormaliseX(real),toPointNormaliseY(real));
+    	Point centerPrec=center;
+    	center=new Point(0,0);
+    	//on veut fromNormalisedToDevicePoint(norm)=dev
+    	Point dec=fromNormalisedToDevicePoint(norm);
+    	
+    	center=new Point(dec.getX()-dev.getX(),dev.getY()-dec.getY());
+    	
+    	//on ne fait que X ou Y
+    	if(dev.getX()==0)//valeur spéciale; pas de décallage en X
+    		center=new Point(centerPrec.getX(),center.getY());
+    	if(dev.getY()==0)//valeur spéciale; pas de décallage en Y
+    		center=new Point(center.getX(),centerPrec.getY());
+    }
     private boolean zoneSelection=true;
+    private static final double marge=12;
     public void selectionnerZone(Zone z){
     	zoneSelectionnee=z;
+    	if(fromRealToDevicePoint(z.getMinPoint()).getX()<marge)
+    		moveRealPointToDevicePoint(z.getMinPoint(),new Point(marge,0));//center=new Point(center.getX()-100,center.getY());
+    	else if(fromRealToDevicePoint(z.getMaxPoint()).getX()>width-marge)
+    		moveRealPointToDevicePoint(z.getMaxPoint(),new Point(width-marge,0));//center=new Point(center.getX()+100,center.getY());
+    	if(fromRealToDevicePoint(z.getMaxPoint()).getY()<marge)
+    		moveRealPointToDevicePoint(z.getMaxPoint(),new Point(0,marge));//center=new Point(center.getX(),center.getY()+100);
+    	else if(fromRealToDevicePoint(z.getMinPoint()).getY()>height-marge)
+    		moveRealPointToDevicePoint(z.getMinPoint(),new Point(0,height-marge));//center=new Point(center.getX(),center.getY()-100);
     	postInvalidate();
     }
     private Zone zoneSelectionnee;
+    private Point fromRealToDevicePoint(Point real){
+    	return fromNormalisedToDevicePoint(new Point(toPointNormaliseX(real),toPointNormaliseY(real)));
+    }
     private Point fromNormalisedToDevicePoint(Point nor){
     	double x=nor.getX();
     	double y=nor.getY();
