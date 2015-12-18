@@ -1,7 +1,9 @@
 package fr.univorleans.m2inis.sig;
 import java.util.*;
 import java.io.*;
-
+/*
+Service pour le cas hors connexion
+*/
 public class LocalDataSource implements IDataSource{
 	
 	private Graphe graphe;

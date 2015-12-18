@@ -1,7 +1,11 @@
 package fr.univorleans.m2inis.sig;
 import java.util.*;
 /*
-Noeud de début ou de fin
+Noeud de début ou de fin (avec arcs orientés)
+Un DemiNoeud est capable de dormir et de se réveiller (pour usage par un ProjectionPlan lors de la recherche de chemin)
+Il faut appeler clear() ou dormir() après usage (pour la mémoire et pour ne pas perturber la recherche de chemin)
+@sa fr.univorleans.m2inis.sig.ProjectionPlan
+@sa fr.univorleans.m2inis.sig.Graphe#computePath1
 */
 public class DemiNoeud extends NoeudPourParcourt{
 	public DemiNoeud(Point pos){

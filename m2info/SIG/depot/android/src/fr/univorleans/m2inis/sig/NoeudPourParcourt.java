@@ -20,6 +20,7 @@ public class NoeudPourParcourt extends Noeud<NoeudPourParcourt>{
 	private ArcType<NoeudPourParcourt> conv(ArcType<Noeud<NoeudPourParcourt>> a){
 		return new ArcType<NoeudPourParcourt>((NoeudPourParcourt)a.getNoeud(),a.getType());
 	}
+	/*fournit un itérateur sur les voisins du points (ceux habituels et éventuellement le demi-noeud de fin)*/
 	public Iterable<ArcType<NoeudPourParcourt>> getVoisinsParcourt(){
 		return new Iterable<ArcType<NoeudPourParcourt>>(){
 			public Iterator<ArcType<NoeudPourParcourt>> iterator(){
@@ -57,7 +58,7 @@ public class NoeudPourParcourt extends Noeud<NoeudPourParcourt>{
 		};
 		//return voisins;
 	}
-	protected DemiNoeud noeudFin;//null si on ne pointe pas vers le noeud de fin
+	protected DemiNoeud noeudFin;//null si on ne pointe pas vers un noeud de fin (on ne garde qu'un de ces noeuds; on devrait garder le plus proche)
 	NoeudPourParcourt parent;//algo de Dijkstra
 	double distance;//algo de Dijkstra
 	boolean fixe;//algo de Dijkstra

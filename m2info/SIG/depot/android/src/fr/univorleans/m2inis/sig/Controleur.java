@@ -1,6 +1,12 @@
 package fr.univorleans.m2inis.sig;
 import java.util.*;
+/*
+(Il ne s'agit que d'une partie des controleurs)
+Le Controleur propose les services de recherche de parking à partir des boutons à droite de la MapView (rechParkingLePlusProche et rechParkingLePlusProcheDuBatimentUnivActuel) et de recherche de trajectoire de la zone sélectionnée en dernier (note: dans l'implémentation actuelle de MapView on n'appelle pas onZoneSelected) vers la position choisie (onPointSelected) 
 
+
+
+*/
 public class Controleur implements OnZoneSelectedListener,OnPointSelectedListener{
 	public Controleur(MapView mapView_){
 		mapView=mapView_;
@@ -8,7 +14,7 @@ public class Controleur implements OnZoneSelectedListener,OnPointSelectedListene
 	private MapView mapView;
 	private Zone dernierZoneValableSelectionnee;
 	public void onZoneSelected(Zone z){
-		if(z.getType()==Zone.parking||z.getType()==Zone.batimentUniv)
+		if(z.getType()==Zone.parking||z.getType()==Zone.batimentUniv)//les autres sont ignorées
 			dernierZoneValableSelectionnee=z;
 	}
 	public void setDataSource(IDataSource src){
@@ -58,18 +64,18 @@ public class Controleur implements OnZoneSelectedListener,OnPointSelectedListene
 	}
 	private Collection<Point> collectionVide=new ArrayList<Point>();
 	public void rechParkingLePlusProche(Point p){
-		//TODO remplir dernierZoneValableSelectionnee
 		
 		
 		
-		//TODO remplir centreDesParking
-		//TODO? remplir les points d'entrée des parking
+		
+		
+		//TODO remplir les points d'entrée des parking
 		Line cheminPropose;
 		cheminPropose=dataSource.computePath(toCollectionDePoint(p),collectionVide,null,null,"parking");
 		mapView.setItineraire(cheminPropose);
 	}
 	public void rechParkingLePlusProcheDuBatimentUnivActuel(){
-		//TODO remplir dernierZoneValableSelectionnee
+		 
 		Line cheminPropose;
 		Collection<NoeudPourParcourt> pointsDentree=new ArrayList<NoeudPourParcourt>();
 		Point centreZone=dernierZoneValableSelectionnee.getPointEntree(pointsDentree);

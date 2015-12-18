@@ -1,5 +1,6 @@
 package fr.univorleans.m2inis.sig;
 import java.util.*;
+/*Classe pas vraiment utilisée*/
 public class Face{
 	private Collection<Noeud> pts=new ArrayList<Noeud>();
 	public void add(Noeud n){

@@ -1,13 +1,13 @@
 package fr.univorleans.m2inis.sig;
 import java.util.*;
 import java.io.*;
+/*
+Graphe de NoeudPourParcourt, pour calculer les chemins entre deux ensembles de points (on ne prend pas en charge le cas avec ensemble de NoeudPourParcourt, qui permettrait de mieux calculer les distances entre zones)
+On peut précharger les projection sur les segments via un ProjectionPlan
+@sa fr.univorleans.m2inis.sig.ProjectionPlan
+*/
 public class Graphe{
-	/*private Graphe(IDataSource ds_){
-		
-		ds=ds_;
-		
-		//if(true)throw new RuntimeException("t="+mapDecoupee.size());
-	}*/
+	//retourne les arcs du graphe
 	public Collection<Line> getLines(int type){
 		return lines.get(type);
 	}
@@ -35,6 +35,7 @@ public class Graphe{
 		return res;
 	}
 	private List<Collection<Line>> lines=new ArrayList<Collection<Line>>();
+	//lit la ligne comme étant un sommet du graphe
 	private void readLineAsPoint(String ln){
 		Scanner sc=new Scanner(ln);
 		double x=Double.parseDouble(sc.next());
@@ -153,7 +154,9 @@ public class Graphe{
 	}
 	public static class ProjSurSegment{
 		/*
-		Il s'agit du point a*coef+b*(1-coef)
+		proj = a*coef+b*(1-coef)
+		on ignore coef et le point projeté
+		dist: distance entre proj et le point projeté
 		*/
 		public ProjSurSegment(NoeudPourParcourt a_,Point proj_,double dist_,NoeudPourParcourt b_){
 			a=a_;
@@ -219,13 +222,13 @@ public class Graphe{
 	
 	public ProjSurSegment projectionSurSegment(Point pos){
 		ProjSurSegment res=projeter(noeudInitialPourProjection1,noeudInitialPourProjection2,pos);
-		//for(Collection<Noeud> c:mapDecoupee){
+		
 			for(NoeudPourParcourt n:sommetsDuGraphe){
 				res=res.plusProche(n,pos);
 			}
-		//}
 		
-		//return null;//TODO
+		
+		//return null;
 		return res;//new ProjSurSegment(na,proj,nb);
 	}
 	
@@ -339,7 +342,7 @@ public class Graphe{
 		}
 		liste.addAll(begin);
 		NoeudPourParcourt n=algoDijkstra(liste,end);
-		if(n!=null){
+		if(n!=null){//on a une solution
 			//res.addPoint(realEnd);
 			//TODO ajouter la fin normale
 			while(n.parent!=n){
@@ -349,7 +352,7 @@ public class Graphe{
 			res.addPoint(n.getPosition());
 			//TODO ajouter le début normal
 			//res.addPoint(realBegin);
-		}else{
+		}else{//pas de solution
 			res.addPoint(begin.iterator().next().getPosition());
 			res.addPoint(end.iterator().next().getPosition());
 		}

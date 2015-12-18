@@ -2,19 +2,8 @@ package fr.univorleans.m2inis.sig;
 import java.util.*;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.BitmapFactory.Options;
 import android.graphics.*;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
-import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Surface;
 import android.view.View;
@@ -26,7 +15,18 @@ import android.util.AttributeSet;
 import android.view.ScaleGestureDetector;
 import android.view.GestureDetector;
 //postInvalidateOnAnimation ou postInvalidate?
-
+/*
+Classe pour dessiner des cartes à partir d'une source de données
+Il est possible de se déplacer dans la carte on de zoomer à la mode des écrans tactiles (en bougeant ses doigts sur l'écran)
+Les coordonnées sont en longitude/lattitude et sont transformés en coordonnées normalisées (pour éviter les pertes dues au manque de précision des float). On transforme ensuite vers les coordonnées matériel (device) via les méthodes translate et scale de la classe Canvas.
+Les chemins de la carte sont précalculés une fois pour toutes dans un Path (méthode drawCheminsPossibles)
+Services non-événementiels (méthodes publiques):
+	afficher une trajectoire: setItineraire
+	afficher la position actuelle de l'utilisateur: setUserLocation
+	passer en mode choix de points (l'utilisateur pourra choisir un point dans la scène): setZoneSelection
+	selectionner une Zone: selectionnerZone
+	s'enregistrer en tant que OnPointSelectedListener
+*/
 public class MapView extends View implements ILoaderObserver/*implements SurfaceHolder.Callback*/{
 		public void setUserLocation(double x,double y)
 		{
@@ -34,15 +34,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 			postInvalidate();
 		}
 		private Point userLocation;
-        private float mXDpi;
-        private float mYDpi;
-        private float mMetersToPixelsX;
-        private float mMetersToPixelsY;
-        //private Bitmap mBitmap;
-        private float mXOrigin;
-        private float mYOrigin;
-        private float mHorizontalBound;
-        private float mVerticalBound;
+
         private Line cheminPropose;
         public void setItineraire(Line ch){
         	cheminPropose=ch;
@@ -57,7 +49,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
     public void surfaceCreated(SurfaceHolder holder) {}*/
         public MapView(Context context, AttributeSet attrs) {
         	super(context, attrs);
-			// Acquire a reference to the system Location Manager
+			
 			
 			couleurTypeLigne=new int[]{Color.WHITE,Color.YELLOW,Color.BLUE,Color.MAGENTA};
 			
@@ -159,9 +151,11 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 				System.err.println("OOOO onScale "+zoom);
 				
 				syncZoom();
-				//TODO faire en sorte que zPoint apparaisse toujours au même endroit sur l'écran (calculer center en fonction)
-				//center=new Point(-((zpx-width/2)/mulx+zPoint.getX()),((zpy-height/2)/muly-zPoint.getY()));
-				//center=new Point(-(zpx-width/2)/mulx+zPoint.getX(),(zpy-height/2)/muly+zPoint.getY());
+				
+				//
+				//
+				
+				//on fait en sorte que zPoint apparaisse toujours au même endroit sur l'écran
 				center=new Point(0,0);
 				Point dev=fromNormalisedToDevicePoint(zPoint);
 				center=new Point(dev.getX()-zpx,zpy-dev.getY());
@@ -233,7 +227,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 			drawCheminsPossibles(pathChemins[type],type);
     	}
     	pathPoints=new Path();
-    	for(NoeudPourParcourt n:dataSource.getSommetsDuGraphe()){
+    	for(NoeudPourParcourt n:dataSource.getSommetsDuGraphe()){//pour que ça soit plus joli, on dessine des disques à l'emplacement des noeuds
         	Point p=n.getPosition();
         	pathPoints.addCircle(toPointNormaliseX(p),toPointNormaliseY(p),2,Path.Direction.CW);
         }
@@ -294,13 +288,9 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 	private String loaderState;
     public MapView(Context context) {
         super(context);
-//if(true)throw new RuntimeException();
-        DisplayMetrics metrics = new DisplayMetrics();
-        //getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        mXDpi = metrics.xdpi;
-        mYDpi = metrics.ydpi;
-        mMetersToPixelsX = mXDpi / 0.0254f;
-        mMetersToPixelsY = mYDpi / 0.0254f;
+        
+        //
+        
 
         // rescale the ball so it's about 0.5 cm on screen
         /*Bitmap ball = BitmapFactory.decodeResource(getResources(), R.drawable.ball);
@@ -318,7 +308,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
     private Path[] pathChemins;
     private Path pathPoints;
 	//private long prevTime;
-	/*Transformer de point normalisé vers point device*/
+	/*Transformer la scène de point normalisé vers point device*/
 	private void transformer(Canvas canvas){
 		canvas.translate((float)-center.getX(),(float)center.getY());//on déplace le carré selon l'utilisateur
 		if(height<width)//centrer le carré horizontalement
@@ -431,27 +421,11 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 		canvas.save();//sauvegarde la matrice de transformation
 		
         /*
-         * compute the new position of our object, based on accelerometer
-         * data and present time.
+
          */
 
-        /*final float xc = mXOrigin;
-        final float yc = mYOrigin;
-        final float xs = mMetersToPixelsX;
-        final float ys = mMetersToPixelsY;
-        //final Bitmap bitmap = mBitmap;
-        final int count = particleSystem.getParticleCount();
-        for (int i = 0; i < count; i++) {
-            /*
-             * We transform the canvas so that the coordinate system matches
-             * the sensors coordinate system with the origin in the center
-             * of the screen and the unit is the meter.
-             * /
 
-            final float x = xc + particleSystem.getPosX(i) * xs;
-            final float y = yc - particleSystem.getPosY(i) * ys;
-            canvas.drawBitmap(bitmap, x, y, null);
-        }*/
+        
         
         mPaint.setColor(Color.GRAY);
         mPaint.setStyle(Paint.Style.STROKE);

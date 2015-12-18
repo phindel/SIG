@@ -1,5 +1,9 @@
 package fr.univorleans.m2inis.sig;
 
+/*
+Classe pour représenter un arc dans le Graphe
+Composé d'un noeud et d'un type (à choisir dans les constantes de la classe)
+*/
 public class ArcType<N>{
 	public ArcType(N n_,int type_){
 		n=n_;

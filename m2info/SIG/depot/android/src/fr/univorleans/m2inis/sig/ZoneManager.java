@@ -1,7 +1,18 @@
 package fr.univorleans.m2inis.sig;
 import java.util.*;
 import java.io.*;
+/*
+Sert à charger les zones de la carte à partir d'un fichier (typiquement res/raw/zones.txt)
+Format du fichier: les zones sont stockées en ligne
 
+Type nom <liste de nombres> 
+
+Type: BatimentUniv Parking Lac Foret AutreBatiment
+un nom ne devrait pas contenir d'espace
+
+La liste de nombres est de la forme (x_i,y_i)_i, elle correspond à la liste de points ((x_i,y_i))_i
+
+*/
 public class ZoneManager{
 	private ZoneManager(ILoaderObserver obs,InputStream file)throws IOException{
 		BufferedReader br=null;
@@ -86,6 +97,9 @@ public class ZoneManager{
 	public Collection<String> getBuildingsName(){//pour pouvoir afficher la liste des noms
 		return mBatimentUniv.keySet();
 	}
+	/*
+	Retourne la liste des zones dont la bounding box contient le point passé en paramètre
+	*/
 	public Collection<Zone> getZoneAt(Point p){
 		Collection<Zone> deuxiemePasse=new ArrayList<Zone>();
 		double x=p.getX();

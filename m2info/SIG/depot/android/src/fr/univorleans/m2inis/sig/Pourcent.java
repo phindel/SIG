@@ -1,4 +1,7 @@
 package fr.univorleans.m2inis.sig;
+/*
+Utilisé pour afficher la progression du chargement
+*/
 public class Pourcent{
 	public Pourcent(long max_){
 		max=max_;

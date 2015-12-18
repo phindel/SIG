@@ -2,21 +2,15 @@ package fr.univorleans.m2inis.sig;
 import java.util.*;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.BitmapFactory.Options;
+
 import android.graphics.*;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
+
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.util.DisplayMetrics;
+
 import android.view.Display;
-import android.view.Surface;
+
 import android.view.View;
 import android.widget.TextView;
 import android.view.WindowManager;
@@ -71,7 +65,7 @@ public class MainActivity extends Activity {
 			userLocation=new Point(l.getLongitude(),l.getLatitude());
 			mMapView.setUserLocation(l.getLongitude(),l.getLatitude());
 			buttonRechParkingLePlusProcheLocalisationActuelle.setEnabled(true);
-			//throw new RuntimeException("Ca marche "+getClass());
+			
 			}
 
 			public void onStatusChanged(String provider, int status, Bundle extras) {}

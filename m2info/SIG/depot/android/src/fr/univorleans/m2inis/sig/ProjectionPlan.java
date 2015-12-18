@@ -1,7 +1,14 @@
 package fr.univorleans.m2inis.sig;
 
 import java.util.*;
-
+/*
+Permet de calculer une fois pour toutes les projection de points sur segments (qui prennent du temps)
+Cycle de vie:
+	A sa création, l'object appelle dormir()
+	Usage: reveiller() -> utilisation-> dormir()
+	Destruction: clear()
+Ne pas invoquer clear() peut provoquer des fuites de mémoire
+*/
 public class ProjectionPlan{
 	public ProjectionPlan(Graphe g,Collection<Point> begin,Collection<Point> end){
 				

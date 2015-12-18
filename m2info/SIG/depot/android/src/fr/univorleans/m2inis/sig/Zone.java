@@ -1,6 +1,11 @@
 package fr.univorleans.m2inis.sig;
 import java.util.*;
 import android.graphics.Color;
+/*
+Une zone correspond à un batiment universitaire, un parking ou à un élément de décors de la carte
+On ne prend en compte qu'un polygone et un seul anneau du polygone
+Les batiment universitaire et les parking doivent être utilisée via leur classe respectives (BatimentUniv,Parking)
+*/
 public class Zone{
 	public Zone(String nom_,List<Point>polygoneExterieur_,int type_){
 		nom=nom_;
@@ -59,6 +64,9 @@ public class Zone{
 	public List<Point> getLimite(){
 		return polygoneExterieur;
 	}
+	/*
+	Pour faire une bounding box
+	*/
 	public Point getMinPoint(){
 		return minPoint;
 	}

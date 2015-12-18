@@ -1,5 +1,5 @@
 exec:
-	java -cp build:/usr/share/java/postgis.jar:/usr/share/java/postgresql.jar ImporteurJDBC /home/leopold/SIG/m2info/SIG/depot/android/res/raw/zones.txt
+	java -cp build:/usr/share/java/postgis.jar:/usr/share/java/postgresql.jar ImporteurJDBC ../android/res/raw/zones.txt ../android/res/raw/line.data.txt
 
 comp:
 	javac src/ImporteurJDBC.java -d build -cp /usr/share/java/postgis.jar:/usr/share/java/postgresql.jar -sourcepath src:../android/src
