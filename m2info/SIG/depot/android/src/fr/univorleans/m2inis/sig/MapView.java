@@ -42,11 +42,6 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
         }
         private boolean ignoreUserChosePoint=false;
         private int []couleurTypeLigne;
-/*public void surfaceDestroyed(SurfaceHolder holder) {}
-        public void surfaceChanged(SurfaceHolder holder, int format, int width,
-            int height) {}
-
-    public void surfaceCreated(SurfaceHolder holder) {}*/
         public MapView(Context context, AttributeSet attrs) {
         	super(context, attrs);
 			
@@ -83,22 +78,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 					}
 					
 					
-					/*if(prevPoint_cheminPropose!=null){
-						parent.setState("...");
-						long prevTime=System.currentTimeMillis();
-						cheminPropose=dataSource.computePath(ps,prevPoint_cheminPropose);
-						Point prev=null;
-						double dist=0;
-						for(Point p:cheminPropose.getPoints()){
-							if(prev!=null){
-								dist+=prev.distance2(p);
-							}
-							prev=p;
-						}
-						parent.setState("Calcul: "+(System.currentTimeMillis()-prevTime)+"ms");
-						postInvalidate();
-						//parent.setState("Dist: "+dist);
-					}*/
+					
 					prevPoint_cheminPropose=ps;
 				}
 				if(true){
@@ -177,19 +157,8 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 			}) ;
 			
         }
-	/*private void syncZoom(){
-		Point min=dataSource.getMinPoint();
-		Point max=dataSource.getMaxPoint();
-		double dx=max.getX()-min.getX();
-		double dy=max.getY()-min.getY();
-		double d=Math.min(dx,dy);
-		int wh=Math.min(width,height);
-		mulx=wh/(d)*zoom;
-		muly=wh/(d)*zoom;
-		//mulNormalisation=wh/d;
-		
-		
-	}*/
+	/*
+	*/
 	private void syncZoom(){
 		
 		double d=Math.min(tailleNormalisationX*2,tailleNormalisationY*2);
@@ -247,28 +216,10 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 			
 			return retVal || super.onTouchEvent(event);
         
-        /*
-        int action = event.getAction();
-        if(dataSource!=null){
-        	scaleGestureDetector.onTouchEvent(event);
-        }
+        
+        
 
-        if (action == MotionEvent.ACTION_DOWN) {
-        	userClickX = (int) event.getX();
-            userClickY = (int) event.getY();
-            //colPt.add(new Point(x,y));
-            return true;
-
-        } else if (action == MotionEvent.ACTION_UP) {
-            /*userClickX = (int) event.getX();
-            userClickY = (int) event.getY();
-            center=toRealPoint(userClickX,userClickY);
-            zoom*=2;/
-            //center=toRealPoint(userClickX,userClickY);
-            return true;
-        }
-
-        return false;*/
+        
     }
 	private float lastSpanX;
 	private float lastSpanY;

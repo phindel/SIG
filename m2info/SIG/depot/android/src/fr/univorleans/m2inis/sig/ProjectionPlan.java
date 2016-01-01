@@ -7,7 +7,7 @@ Cycle de vie:
 	A sa création, l'object appelle dormir()
 	Usage: reveiller() -> utilisation-> dormir()
 	Destruction: clear()
-Ne pas invoquer clear() peut provoquer des fuites de mémoire
+Ne pas invoquer clear() après le dernier usage peut provoquer des fuites de mémoire. Il ne faut plus utiliser l'objet après un clear()
 */
 public class ProjectionPlan{
 	public ProjectionPlan(Graphe g,Collection<Point> begin,Collection<Point> end){
