@@ -2,8 +2,8 @@ package fr.univorleans.m2inis.sig;
 
 import java.util.*;
 /*
-Un Noeud d'un graphe représente une intersection de segments de routes
-Il sera ainsi possible de parcourir un graphe qui représente un carte
+Un Noeud d'un graphe représente une intersection de segments de routes, une fin de route ou une inflexion de route
+Il sera ainsi possible de parcourir un graphe qui représente la carte des routes
 */
 public class Noeud<N extends Noeud> implements java.io.Serializable{
 	public Noeud(Point pos_,int id_){
@@ -11,9 +11,13 @@ public class Noeud<N extends Noeud> implements java.io.Serializable{
 		id=id_;
 	}
 	private int id;
+	//Retourne l'identifiant du Noeud. Surtout utile pour l'export du graphe (NoeudPourTraitement de la partie pretraitements)
 	public int getId(){
 		return id;
 	}
+	/*
+	Ajoute le Noeud comme voisin. Il y aura route de type typeChemin entre les deux Noeud. Le lien est fait dans les deux sens
+	*/
 	public void add(Noeud<N> n,int typeChemin){
 		voisins.add(new ArcType<Noeud<N>>(n,typeChemin));
 		n.voisins.add(new ArcType<Noeud<N>>(this,typeChemin));
@@ -45,9 +49,8 @@ public class Noeud<N extends Noeud> implements java.io.Serializable{
 	public int hashCode(){
 		return pos.hashCode();
 	}
-	/*public Collection<Noeud> getVoisins(){
-		return voisins;
-	}*/
+	/*
+	*/
 
 	protected Point pos;
 	protected Collection<ArcType<Noeud<N>>>voisins=new ArrayList<ArcType<Noeud<N>>>();

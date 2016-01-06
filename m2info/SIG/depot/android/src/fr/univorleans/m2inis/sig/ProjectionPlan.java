@@ -34,9 +34,15 @@ public class ProjectionPlan{
 		}
 		dormir();
 	}
+	/*
+	Retourne les Noeud correspondant aux points de début (parcourable)
+	*/
 	public Collection<NoeudPourParcourt> getLbegin(){
 		return lbegin;
 	}
+	/*
+	Retourne les Noeud correspondant aux points de fin (parcourable)
+	*/
 	public Set<NoeudPourParcourt>getLend(){
 		return lend;
 	}
