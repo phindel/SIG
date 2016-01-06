@@ -5,6 +5,8 @@ import android.graphics.Color;
 Une zone correspond à un batiment universitaire, un parking ou à un élément de décors de la carte
 On ne prend en compte qu'un polygone et un seul anneau du polygone
 Les batiment universitaire et les parking doivent être utilisée via leur classe respectives (BatimentUniv,Parking)
+Les autres zones sont créée directement via cette classe
+type correspond aux variables static de la classe
 */
 public class Zone{
 	public Zone(String nom_,List<Point>polygoneExterieur_,int type_){
@@ -27,9 +29,15 @@ public class Zone{
 		minPoint=new Point(minx,miny);
 		maxPoint=new Point(maxx,maxy);
 	}
+	/*
+	Retourne le centre de la bounding box de la zone
+	*/
 	public Point getCenter(){
 		return new Point((minPoint.getX()+maxPoint.getX())*.5,(minPoint.getY()+maxPoint.getY())*.5);
 	}
+	/*
+	Retourne le type de la zone
+	*/
 	public int getType(){
 		return type;
 	}

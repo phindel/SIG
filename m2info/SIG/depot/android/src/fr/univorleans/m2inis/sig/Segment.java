@@ -15,7 +15,9 @@ public class Segment{
 	public Point getB(){
 		return b;
 	}
-	
+	/*
+	Retourne le point d'intersection entre le segment courant et le segment [c,d] s'il existe
+	*/
 	public Point intersecte(Point c,Point d){
 		//if(true)return null;
 		/*Segment s=new Segment(sa,sb);
