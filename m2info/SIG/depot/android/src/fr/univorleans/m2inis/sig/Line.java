@@ -5,7 +5,6 @@ public class Line{
 	public Line(){}
 	
 	public void addPoint(Point p){
-		//if(true)throw new RuntimeException("Ca marche!");
 		pts.add(p);
 	}
 	public List<Point> getPoints(){

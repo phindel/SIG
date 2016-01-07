@@ -29,7 +29,7 @@ public interface IDataSource{
 	public Iterable<NoeudPourParcourt> getSommetsDuGraphe();
 	int getLineTypeNumber();
 	/*
-	Retourne le centre de la zone
+	Retourne le centre de la bounding box de la zone
 	*/
 	Point getCenter();
 	/*
@@ -43,8 +43,7 @@ public interface IDataSource{
 	/*
 	Retourne le Noeud le plus proche du point et ses voisins vers lesquels on peut aller depuis ce noeud (plutôt inutile)
 	*/
-	public Collection<NoeudPourParcourt> selectionnerNoeud(Point p);//TODO
-	//Point getUserLocation();//peut être null
-	//boolean isUserCentric();//la position de l'utilisateur doit être au milieu du dessin?
+	public Collection<NoeudPourParcourt> selectionnerNoeud(Point p);
+
 	
 }
