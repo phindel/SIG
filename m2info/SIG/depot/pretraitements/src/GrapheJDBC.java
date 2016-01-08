@@ -4,7 +4,12 @@ import java.util.*;
 import java.io.*;
 import org.postgis.PGgeometry;
 import org.postgis.LineString;
-
+/*
+Sert à construire le graphe des carrefours et des inflexion de "chemin" à partir d'une connexion JDBC
+Les points sont mis dans une sorte de table de hashage (mapDecoupee), pour améliorer les performances.
+On ne peut pas utiliser une vraie table de hashage car on n'aurai pas accès aux listes derrière la table elle-même
+On ne fait pas de distinctions entre les différents type de route (il aurait fallut utiliser ArcType)
+*/
 public class GrapheJDBC{
 	public GrapheJDBC(Connection conn_)throws Exception{
 		conn=conn_;
@@ -56,6 +61,7 @@ public class GrapheJDBC{
 			++ca;
 		}
 	}
+	/*Ecrit le graphe dans le fichier out*/
 	public void printLineTo(File out)throws IOException{
 		PrintStream ps=null;
 		try{
@@ -74,6 +80,7 @@ public class GrapheJDBC{
 				ps.close();
 		}
 	}
+	/*4 comparateurs suivant X et Y et suivant la monotonie désirée*/
 	static Comparator<Point> compXCrois=new Comparator<Point>(){
 		public int compare(Point o1,Point o2){
 			if(o1.getX()==o2.getX())
@@ -114,7 +121,12 @@ public class GrapheJDBC{
 				return 1;
 		}
 	};
+	/*découper les lignes pour tenir compte des intersections (à chaque intersection on crée un Point et on le met au bon endroit dans la liste)
+	On découpe la carte en de nombreux rectangle pour obtenir de bonnes performance. Chaque segment appartiendra à au moins un rectangle
+	*/
 	private void decouperLigne(Collection<Line>col){
+		
+		//--------- préparation: création des rectangles contenant les segments ---------
 		int t=130;
 		double coeffDecoupX=t/(maxx-minx);
 		double coeffDecoupY=t/(maxy-miny);
@@ -131,6 +143,10 @@ public class GrapheJDBC{
 			}
 			++i;
 		}
+		//--------- préparation: ajout des segments dans les rectanges ---------
+		/*
+		les rectangles considérés pour chaque Segment seront ceux qui ont leur numéro x entre dx et fx et leur numéro y entre dy et fy
+		*/
 		Pourcent pc=new Pourcent(col.size()*2);
 		int cpt=0;
 		for(Line l:col){
@@ -160,6 +176,7 @@ public class GrapheJDBC{
 				prev=p;
 			}
 		}
+		//--------- recherche d'intersection ---------
 		cpt=0;
 		for(Line l:col){
 			//obs.onStateChanged("Recherche d'intersection "+(((cpt*500.)/col.size())*.1+50)+"%");
@@ -217,7 +234,7 @@ public class GrapheJDBC{
 							if(prec==null||!prec.equals(p))
 								it.add(np);
 						}
-						//it.add(p);
+						
 					}
 				}
 				prev=p;
@@ -227,7 +244,7 @@ public class GrapheJDBC{
 	private double coeffDecoup;
 	private ArrayList<Collection<NoeudPourTraitement> > mapDecoupee;
 	private NoeudPourTraitement creerSiInexistant(Point pos){
-		Collection<NoeudPourTraitement> col=mapDecoupee.get((int)Math.floor(coeffDecoup*(pos.getX()-minx)));
+		Collection<NoeudPourTraitement> col=mapDecoupee.get((int)Math.floor(coeffDecoup*(pos.getX()-minx)));//récupération de la zone de la carte
 		for(NoeudPourTraitement n:col){
 			if(n.getPosition().distance2(pos)<3e-5)
 				return n;
@@ -237,6 +254,10 @@ public class GrapheJDBC{
 		return n; 
 	}
 	private Connection conn;
+	/*
+	Lire la ligne depuis un ResultSet JDBC
+	On ne fait pas de distinctions entre les différents type de route
+	*/
 	private void lireLigne(ResultSet r,int cptRoute)throws Exception{
 		PGgeometry geom = (PGgeometry)r.getObject(1); 
 		int id = r.getInt(2); 
@@ -267,10 +288,10 @@ public class GrapheJDBC{
 			}
 			lines.add(l);
 			
-			//ps.print("BatimentUniv "+name.replace(" ","_"));
-			//printPointsDeLaZone(ps,(Polygon)geom.getGeometry());
-			//TODO afficher la liste des services
-			//ps.println();
+			
+			
+			
+			
 		}
 	}
 	private void lireLigne()throws Exception{
@@ -291,12 +312,6 @@ public class GrapheJDBC{
 		++cptRoute;
 	}
     s.close(); 
-		
-		
-		
-		
-		
-		
 		
 	}
 	private Collection<Line> lines=new ArrayList<Line>();

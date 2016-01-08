@@ -32,11 +32,11 @@ public static void main(String[] args) {
     ((org.postgresql.PGConnection)conn).addDataType("geometry",Class.forName("org.postgis.PGgeometry"));
     ((org.postgresql.PGConnection)conn).addDataType("box3d",Class.forName("org.postgis.PGbox3d"));
     
-    //récupération des zones
+    //récupération du graphe des carrefours et des inflexion de "chemin"
 	GrapheJDBC grapĥeJDBC=new GrapheJDBC(conn);
 	grapĥeJDBC.printLineTo(new File(args[1]));
 	
-	//Le reste de la méthode consiste en la récupération du graphe des carrefours et des inflexion de "chemin"
+	//Le reste de la méthode consiste en la récupération des zones
     ps=new PrintStream(new File(args[0]));
     /* 
     * Create a statement and execute a select query. 
