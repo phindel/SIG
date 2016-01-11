@@ -1,10 +1,17 @@
 package fr.univorleans.m2inis.sig;
 import java.util.*;
-
+/*Noeud pour le parcourt dans le graphe des routes
+On a deux type d'arcs partant de ce type de Noeud:
+	les arcs classiques: de type NoeudPourParcourt
+	un arc de fin: noeudFin qui désigne une fin de trajectoire
+*/
 public class NoeudPourParcourt extends Noeud<NoeudPourParcourt>{
 	public NoeudPourParcourt(Point pos,int id){
 		super(pos,id);
 	}
+	/*
+	Appelé quand on commence une recherche de chemin (Dijkstra)
+	*/
 	public final void reinit(){
 		if(pos!=null)
 			pos.setMarque(false);

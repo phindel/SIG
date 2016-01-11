@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.view.MotionEvent;
 import android.location.*;
 import android.widget.*;
+/*La seule et unique activité*/
 public class MainActivity extends Activity {
 
     private MapView mMapView;
@@ -133,21 +134,8 @@ public class MainActivity extends Activity {
     protected void onPause() {
         super.onPause();
     }
-    /*public void setRechItineraire(boolean b){
-    	rechItineraire=b;
-    	if(rechItineraire)
-    		buttonItineraire.setText("Annuler la recherche");
-    	else
-    		buttonItineraire.setText("Rechercher un itinéraire");
-    }
-    public boolean isRechItineraire(){
-    	return rechItineraire;
-    }
-    private boolean rechItineraire=false;
-	public void rechItineraire(View view) {
-		//
-		setRechItineraire(!rechItineraire);
-	}*/
+    /*
+	*/
 	private Point userLocation;
 	public void rechParkingLePlusProcheLocalisationActuelle(View view){
 		controleur.rechParkingLePlusProche(userLocation);

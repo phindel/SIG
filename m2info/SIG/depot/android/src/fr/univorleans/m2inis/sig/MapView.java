@@ -19,7 +19,8 @@ import android.view.GestureDetector;
 Classe pour dessiner des cartes à partir d'une source de données
 Il est possible de se déplacer dans la carte on de zoomer à la mode des écrans tactiles (en bougeant ses doigts sur l'écran)
 Les coordonnées sont en longitude/lattitude et sont transformés en coordonnées normalisées (pour éviter les pertes dues au manque de précision des float). On transforme ensuite vers les coordonnées matériel (device) via les méthodes translate et scale de la classe Canvas.
-Les chemins de la carte sont précalculés une fois pour toutes dans un Path (méthode drawCheminsPossibles)
+Les chemins de la carte sont précalculés une fois pour toutes dans un Path (méthode drawCheminsPossibles).
+Puisqu'un Path travaille sur des float, il faut utiliser des coordonnées intermédiaire (Normalise) pour éviter de ne dessiner qu'un inutile X au lieu d'une véritable carte.
 Services non-événementiels (méthodes publiques):
 	afficher une trajectoire: setItineraire
 	afficher la position actuelle de l'utilisateur: setUserLocation
@@ -60,7 +61,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 				postInvalidate();
 				return true;
 			}
-			
+			/*Quand l'utilisateur tape sur l'écran*/
 			public boolean onSingleTapConfirmed(MotionEvent event){
 				if(center!=null){
 				//if((int) event.getX()==userClickX&&(int) event.getY()==userClickY)
@@ -91,7 +92,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 			});
 			scaleGestureDetector=new ScaleGestureDetector(context,new ScaleGestureDetector.SimpleOnScaleGestureListener(){
 
-			//Detects that new pointers are going down.
+			.
 			@Override
 			public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
 				if(center==null)
@@ -158,6 +159,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 			
         }
 	/*
+	Synchronise mulx et muly
 	*/
 	private void syncZoom(){
 		
@@ -173,6 +175,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 	}
 	private Collection<NoeudPourParcourt> selectionnerNoeud;
 	private Point selectionnerNoeud_p;
+	/*Initialise la carte avec les données*/
 	public void setDataSource(IDataSource src){
 		
 		
@@ -243,11 +246,9 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
         //
         
 
-        // rescale the ball so it's about 0.5 cm on screen
-        /*Bitmap ball = BitmapFactory.decodeResource(getResources(), R.drawable.ball);
-        final int dstWidth = (int) (sBallDiameter * mMetersToPixelsX + 0.5f);
-        final int dstHeight = (int) (sBallDiameter * mMetersToPixelsY + 0.5f);
-        mBitmap = Bitmap.createScaledBitmap(ball, dstWidth, dstHeight, true);*/
+        
+        
+        
     }
 
     @Override
@@ -259,7 +260,8 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
     private Path[] pathChemins;
     private Path pathPoints;
 	//private long prevTime;
-	/*Transformer la scène de point normalisé vers point device*/
+	/*Transformer la scène de point normalisé vers point device
+	Les transformations sur la scène sont dans l'ordre inverse de ce qui est écrit dans le code*/
 	private void transformer(Canvas canvas){
 		canvas.translate((float)-center.getX(),(float)center.getY());//on déplace le carré selon l'utilisateur
 		if(height<width)//centrer le carré horizontalement
@@ -308,6 +310,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
     public void setZoneSelection(boolean zoneSelection_){
     	zoneSelection=zoneSelection_;
     }
+    /*Fait en sorte que le point real soit en dev sur l'écran*/
     private void moveRealPointToDevicePoint(Point real,Point dev){
     	Point norm=new Point(toPointNormaliseX(real),toPointNormaliseY(real));
     	Point centerPrec=center;
@@ -390,6 +393,9 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 		//return (float)((p.getX()-center.getX())*mulx+width/2);
 		//return (float)((center.getY()-p.getY())*muly+height/2);
 		transformer(canvas);
+		
+		
+		//------------- dessin des zones -------------
         Path path=new Path();
 		mPaint.setStyle(Paint.Style.FILL);
 		for(Zone z:dataSource.getZones()){
@@ -419,7 +425,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 		muly=height/(max.getY()-min.getY())*zoom;*/
 		int c=0;
 
-
+		//------------- dessin des chemins (carte) -------------
 		mPaint.setStrokeWidth(4);
 		//canvas.drawPoint((float)((0)*mulx+width/2),(float)((0)*muly+height/2),mPaint);
 		if(pathChemins!=null){
@@ -435,6 +441,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 			canvas.drawPath(pathPoints,mPaint);
 		}
 		
+		//------------- dessin du chemin proposé à l'utilisateur -------------
 		mPaint.setStyle(Paint.Style.STROKE);
 		if(cheminPropose!=null){
 			path.reset();
@@ -453,7 +460,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 			}
 			canvas.drawPath(path,mPaint);
 		}
-		if(selectionnerNoeud!=null){
+		if(selectionnerNoeud!=null){//debug
 			path.reset();
 			mPaint.setColor(Color.RED);
 			mPaint.setStrokeWidth(3);
@@ -465,6 +472,8 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 			}
 			canvas.drawPath(path,mPaint);
 		}
+		
+		//------------- affichage de la zone sélectionnée -------------
 		if(zoneSelectionnee!=null){
 			
 			mPaint.setColor(Color.RED);
@@ -474,6 +483,8 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
 		mPaint.setStrokeWidth(6);
 		mPaint.setColor(Color.YELLOW);
 		mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+		
+		//------------- dessin de la position de l'utilisateur -------------
 		if(userLocation!=null){
 			mPaint.setColor(Color.RED);
 			canvas.drawCircle(toPointNormaliseX(userLocation),toPointNormaliseY(userLocation),8,mPaint);
@@ -534,6 +545,7 @@ public class MapView extends View implements ILoaderObserver/*implements Surface
         	invalidate();
 		parent.checkError();
     }
+    /*Initialise le Path des différents type de chemin pour usage ultérieur (améliore les performances)*/
     private void drawCheminsPossibles(Path pathChemins,int type){
     	Random rand=new Random(0);
     	mPaint.setStrokeWidth(2);

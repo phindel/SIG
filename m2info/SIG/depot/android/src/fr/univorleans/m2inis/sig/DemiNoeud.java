@@ -38,10 +38,9 @@ public class DemiNoeud extends NoeudPourParcourt{
 	private Collection<ArcType<NoeudPourParcourt>>voisinsDebut=new ArrayList<ArcType<NoeudPourParcourt>>();
 	private Collection<NoeudPourParcourt>referencePar=new ArrayList<NoeudPourParcourt>();
 	public void addDebut(NoeudPourParcourt n){
-		voisinsDebut.add(new ArcType<NoeudPourParcourt>(n,1));//TODO
+		voisinsDebut.add(new ArcType<NoeudPourParcourt>(n,1));
 	}
 	public void addFin(NoeudPourParcourt n){
-		//TODO
 		referencePar.add(n);
 		n.noeudFin=this;
 	}

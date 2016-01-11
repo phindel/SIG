@@ -2,7 +2,7 @@ package fr.univorleans.m2inis.sig;
 import java.util.*;
 import java.io.*;
 /*
-Graphe de NoeudPourParcourt, pour calculer les chemins entre deux ensembles de points (on ne prend pas en charge le cas avec ensemble de NoeudPourParcourt, qui permettrait de mieux calculer les distances entre zones)
+Graphe de NoeudPourParcourt, pour calculer les chemins entre deux ensembles de points (méthode computePath; on ne prend pas en charge le cas avec ensemble de NoeudPourParcourt, qui permettrait de mieux calculer les distances entre zones)
 On peut précharger les projection sur les segments via un ProjectionPlan
 @sa fr.univorleans.m2inis.sig.ProjectionPlan
 */
@@ -18,7 +18,7 @@ public class Graphe{
 			if(n.getPosition().distance2(pos)<res.getPosition().distance2(pos))
 				res=n;
 		}
-		return res;//TODO
+		return res;
 	}*/
 	public Collection<NoeudPourParcourt> selectionnerNoeud(Point p){
 		Collection<NoeudPourParcourt> res=new ArrayList<NoeudPourParcourt>();
