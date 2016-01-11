@@ -1,0 +1,16 @@
+
+
+Le dossier pretraitements contient les source du programme de prétraitement qui se connecte via JDBC à la base de données (indiquée en dur dans le code)
+Compiler:
+mkdir build
+make comp
+Executer:
+make exec
+
+Une partie du code est en commun avec l'application android
+
+Le dossier android contient les source de l'application android
+Compiler:
+ant debug
+Installer:
+ant installd
